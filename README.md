@@ -3,10 +3,10 @@
 
 <p align="left">
   <a href="https://stackoverflow.com/users/5734685/harish-verma">
-    538
+   🌍 stackoverflow: 538
   </a>
   <a href="https://github.com/harishwordpress?tab=followers">
-    <img alt="GitHub followers" src="https://img.shields.io/github/followers/harishwordpress?color=green&logo=github">
+   🌍  github : 5
   </a>
 
 

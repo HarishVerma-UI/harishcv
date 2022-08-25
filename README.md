@@ -3,7 +3,7 @@
 
 <p align="left">
   <a href="https://stackoverflow.com/users/5734685/harish-verma">
-    <img alt="Stack Overflow reputation" src="https://img.shields.io/stackexchange/stackoverflow/r/5921662?color=orange&label=reputation&logo=stackoverflow">
+    538
   </a>
   <a href="https://github.com/harishwordpress?tab=followers">
     <img alt="GitHub followers" src="https://img.shields.io/github/followers/harishwordpress?color=green&logo=github">

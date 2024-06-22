@@ -26,7 +26,7 @@
 - 🌱 Learning all about **javascript**
 - 💬 Ping me about **javacscript**, **angular**, **css**, **RestAPIs**, **jest**
 - 📫 Reach me: [linkedin](https://www.linkedin.com/in/harish-verma-831599a7/))
-- 📝 Checkout my [Resume](Harish-Verma.pdf).
+- 📝 Checkout my [Resume](HarishKumarVerma.pdf).
 
 #### My Current Stack
 

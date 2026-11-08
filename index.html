@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harish Kumar Verma — 3D Full-Stack Engineer &amp; SaaS Builder Portfolio</title>
+  <title>Harish Kumar Verma | Full Stack Engineer &amp; SaaS Product Specialist</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://unpkg.com/lucide@0.395.0/dist/umd/lucide.min.js"></script>
@@ -34,7 +34,9 @@
     }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #050816;
+      background:
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.16), transparent 35%),
+        linear-gradient(180deg, #050b16 0%, #0b1120 100%);
       color: #f8fafc;
       overflow-x: hidden;
       margin: 0;
@@ -57,11 +59,11 @@
       pointer-events: auto;
     }
     .glass-panel {
-      background: rgba(10, 14, 34, 0.74);
+      background: rgba(12, 18, 32, 0.72);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     .glass-nav {
       background: rgba(5, 8, 22, 0.85);
@@ -82,15 +84,15 @@
       transform: translateZ(24px);
     }
     .text-gradient {
-      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 40%, #38bdf8 75%, #10b981 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #dbeafe 32%, #7dd3fc 65%, #34d399 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     .angular-gradient {
-      background: linear-gradient(135deg, #f43f5e 0%, #6366f1 50%, #06b6d4 100%);
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 35%, #0ea5e9 100%);
     }
     .fullstack-gradient {
-      background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #0ea5e9 100%);
     }
     @keyframes floatSlow {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -225,15 +227,15 @@
       <div class="flex items-center gap-2">
         <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-semibold text-emerald-200 items-center gap-1.5 transition">
           <i data-lucide="globe" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span>Live SaaS</span>
+          <span>Portfolio</span>
         </a>
         <button id="open-resume-modal-btn" type="button" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-semibold text-slate-100 flex items-center gap-1.5 transition">
           <i data-lucide="file-text" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>CV Snapshot</span>
+          <span>Resume</span>
         </button>
         <button type="button" data-cam="contact" class="cam-nav-btn hidden sm:inline-flex px-3.5 py-1.5 rounded-xl angular-gradient text-xs font-semibold text-white shadow-lg shadow-rose-500/20 hover:opacity-95 transition items-center gap-1.5">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>Connect</span>
+          <span>Hire Me</span>
         </button>
         <button id="mobile-menu-btn" type="button" class="lg:hidden p-2 rounded-xl bg-white/5 text-slate-200 hover:bg-white/10" aria-label="Toggle Menu">
           <i data-lucide="menu" class="w-5 h-5"></i>
@@ -265,7 +267,7 @@
             <div class="flex flex-wrap items-center gap-2">
               <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-xs font-mono text-emerald-300">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 node-pulse"></span>
-                Status: Open for Freelance &amp; SaaS Projects
+                Status: Available for product and engineering opportunities
               </span>
               <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/30 text-xs font-mono text-indigo-300">
                 Angular v2–v18+ · React · Node.js · MongoDB · MFE
@@ -283,27 +285,27 @@
                 Harish Kumar <span class="text-gradient">Verma</span>
               </h1>
               <h2 class="text-lg sm:text-2xl font-bold text-slate-200 pt-1">
-                Senior Full Stack Engineer <span class="text-slate-500">|</span> <span class="text-emerald-400">SaaS Builder</span> <span class="text-slate-500">|</span> <span class="text-rose-400">Open for Freelance</span>
+                Senior Full Stack Engineer <span class="text-slate-500">|</span> <span class="text-emerald-400">SaaS &amp; Product Delivery</span> <span class="text-slate-500">|</span> <span class="text-rose-300">Bengaluru, India</span>
               </h2>
             </div>
 
             <!-- About Me Summary Box -->
             <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-emerald-400 space-y-3 text-sm sm:text-base text-slate-300 leading-relaxed">
               <p>
-                Experienced <strong class="text-white">Full-Stack Software Engineer, SaaS Builder &amp; Frontend Architect</strong> with <strong class="text-white">10+ years</strong> of industry experience architecting scalable enterprise platforms, real-time reactive applications, and secure microservices.
+                Experienced <strong class="text-white">Full Stack Engineer and Frontend Architect</strong> with <strong class="text-white">10+ years</strong> of experience delivering scalable enterprise products, real-time applications, and secure digital platforms.
               </p>
               <ul class="space-y-1.5 text-xs sm:text-sm">
                 <li class="flex items-start gap-2">
-                  <span class="text-emerald-400 font-bold">🚀 Available For:</span>
-                  <span><strong class="text-white">SaaS Building</strong>, <strong class="text-white">Freelance Full-Stack Projects</strong>, <strong class="text-white">Technical Architecture Consulting</strong>, &amp; Short Notice roles (LWD 20 Nov 2026).</span>
+                  <span class="text-emerald-400 font-bold">🚀 Focus:</span>
+                  <span><strong class="text-white">SaaS product delivery</strong>, <strong class="text-white">full-stack engineering</strong>, <strong class="text-white">technical architecture consulting</strong>, and high-quality product execution.</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-cyan-400 font-bold">🛠️ Full-Stack Capabilities:</span>
-                  <span>End-to-end development spanning <strong class="text-rose-300">Angular (v2 to v18+)</strong>, <strong class="text-cyan-300">React</strong>, <strong class="text-emerald-300">Node.js</strong>, <strong class="text-slate-100">Express</strong>, <strong class="text-emerald-300">MongoDB</strong>, <strong class="text-indigo-300">TypeScript</strong>, and <strong class="text-purple-300">Micro-Frontends (Module Federation)</strong>.</span>
+                  <span class="text-cyan-400 font-bold">🛠️ Core Stack:</span>
+                  <span>End-to-end development across <strong class="text-rose-300">Angular (v2 to v18+)</strong>, <strong class="text-cyan-300">React</strong>, <strong class="text-emerald-300">Node.js</strong>, <strong class="text-slate-100">Express</strong>, <strong class="text-emerald-300">MongoDB</strong>, <strong class="text-indigo-300">TypeScript</strong>, and <strong class="text-purple-300">Micro-Frontends (Module Federation)</strong>.</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-indigo-400 font-bold">💡 Core Expertise:</span>
-                  <span>Enterprise UI systems, real-time collaboration platforms, state management (NgRx/RxJS), high-performance database querying, and modern AI integrations (LLMs, Agentic AI, Vector DBs).</span>
+                  <span class="text-indigo-400 font-bold">💡 Strength:</span>
+                  <span>Designing enterprise user interfaces, reactive product workflows, modern data layers, and AI-enabled product experiences.</span>
                 </li>
               </ul>
             </div>
@@ -333,7 +335,7 @@
             <div class="flex flex-wrap items-center gap-3 pt-1">
               <button type="button" data-cam="experience" class="cam-nav-btn px-5 py-3 rounded-xl angular-gradient text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 hover:scale-[1.02] transition flex items-center gap-2">
                 <i data-lucide="orbit" class="w-4 h-4"></i>
-                <span>Fly Through Career Timeline</span>
+                <span>View Career Timeline</span>
               </button>
               <button type="button" data-cam="architecture" class="cam-nav-btn px-5 py-3 rounded-xl glass-panel hover:bg-white/10 text-slate-100 font-semibold text-sm border border-white/15 transition flex items-center gap-2">
                 <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>

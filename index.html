@@ -1,326 +1,2122 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="dark scroll-smooth">
 <head>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>Harish Verma</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom fonts for this template -->
-  <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet">
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="css/resume.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harish Kumar Verma — 3D Full-Stack Engineer &amp; SaaS Builder Portfolio</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.395.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            angular: '#dd0031',
+            cyber: '#6366f1',
+            neon: '#06b6d4',
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    .navbar-dark .navbar-nav .nav-link {
-    color: white !important;
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #050816;
+      color: #f8fafc;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: auto;
+    }
+    .content-layer {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .interactive-el {
+      pointer-events: auto;
+    }
+    .glass-panel {
+      background: rgba(10, 14, 34, 0.74);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+    .glass-nav {
+      background: rgba(5, 8, 22, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform;
+    }
+    .tilt-card:hover {
+      border-color: rgba(99, 102, 241, 0.55);
+      box-shadow: 0 25px 60px -15px rgba(99, 102, 241, 0.3), 0 0 25px rgba(6, 182, 212, 0.15);
+    }
+    .tilt-inner {
+      transform: translateZ(24px);
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 40%, #38bdf8 75%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .angular-gradient {
+      background: linear-gradient(135deg, #f43f5e 0%, #6366f1 50%, #06b6d4 100%);
+    }
+    .fullstack-gradient {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+    .animate-float {
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+    .animate-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 9999px;
+    }
+    .node-pulse {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: nodePing 2s infinite;
+    }
+    @keyframes nodePing {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
   </style>
-
 </head>
+<body class="selection:bg-indigo-500 selection:text-white custom-scrollbar">
 
-<body id="page-top">
+  <!-- 3D WebGL Background & Interactive Scene -->
+  <canvas id="bg-canvas"></canvas>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
-    <a class="navbar-brand js-scroll-trigger" href="#page-top">
-      <span class="d-block d-lg-none">HARISH VERMA</span>
-      <span class="d-none d-lg-block">
-        <img class="img-fluid img-profile  mx-auto mb-2" src="https://raw.githubusercontent.com/harishwordpress/harishcv/master/img/profile.JPG" alt="">
-      </span>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#about">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#experience">Experience</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#education">Education</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#projects">Projects</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#skills">Skills</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#interests">Interests</a>
-        </li>
-      </ul>
+  <!-- Floating 3D Node Inspector HUD (Bottom Left) -->
+  <div id="node-hud" class="fixed bottom-4 left-4 z-40 max-w-xs sm:max-w-sm glass-panel rounded-2xl p-4 transition-all duration-300 interactive-el border border-indigo-500/40">
+    <div class="flex items-center justify-between gap-2 mb-1.5">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="hud-category" class="text-[11px] font-mono uppercase tracking-wider text-emerald-400">3D Full-Stack Universe · Active</span>
+      </div>
+      <button id="toggle-explorer-btn" type="button" class="text-xs px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-200 border border-indigo-500/30 transition flex items-center gap-1" title="Hide UI to explore 3D universe freely">
+        <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+        <span id="explorer-btn-label">3D Free Look</span>
+      </button>
     </div>
-  </nav>
-
-  <div class="container-fluid p-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="about">
-      <div class="w-100">
-        <h1 class="mb-0">Harish 
-          <span class="text-primary">Verma</span>
-        </h1>
-        <div class="subheading mb-5">Noida Sector-19, UP 201301 &nbsp;|&nbsp; +91-8802748008·
-          <a href="mailto:harishverma555@gmail.com">harishverma555@gmail.com</a>&nbsp;|&nbsp;<a href="https://github.com/harishwordpress/harishcv/raw/master/Harish-Verma.pdf">DOWNLOAD CV</a>
-        </div>
-          <div class="subheading mb-3">Professional Summary</div>
-          <ul class="mb-5">
-          <li class="lead">Total Industrial experience of 4 + years in front-end development.</li>
-          <li class="lead"> Developed front-end web and mobile application by using HTML5, CSS3, JavaScript and JQuery
-               taking advantage of the frameworks like Angular Js, React Js.</li>
-          <li class="lead"> Experience in debugging browsers compatibility issues.</li>
-          <li class="lead"> Have sound knowledge of JavaScript, JQuery, Angular JS, Angular,React Js, Redux, CSS, HTML, and
-          Bootstrap.</li>
-          <li class="lead"> Experience in designing Responsive Webpage for all form factors.</li>
-          <li class="lead"> Expertise in communication skills, Presentation skills.</li>
-        </ul>
-      </div>
-      <div class="social-icons">
-        <a href="https://www.linkedin.com/in/harish-verma-831599a7/" target="_blank">
-          <i class="fab fa-linkedin-in"></i>234324
-        </a>
-        <a href="https://github.com/harishwordpress" target="_blank">
-          <i class="fab fa-github"></i>234234
-        </a>
-        <a href="#">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      </div>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="experience">
-      <div class="w-100">
-        <h2 class="mb-5">Experience</h2>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Senior Web Developer</h3>
-            <div class="subheading mb-3">Taxspanner.com</div>
-            <p class="lead">TaxSpanner is a web-app that handles filing of individual Income Tax Returns (ITR) ,TDS etc.</p>
-          </div>
-          <div class="resume-date text-md-right">
-            <span class="text-primary">March 2016 - 2019</span>
-          </div>
-        </div>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Web Developer</h3>
-            <div class="subheading mb-3">Aj infotechs</div>
-            <p class="lead">Aj infotechs is a service  that handles filing of individual Income Tax Returns (ITR) ,TDS etc.</p>
-          </div>
-          <div class="resume-date text-md-right">
-            <span class="text-primary">December 2016 - March 2015</span>
-          </div>
-        </div>
-      </div>
-
-    </section>
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="projects">
-      <div class="w-100">
-        <h2 class="mb-5">Projects</h2>
-        
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Project 1: Taxspanner (Web Application)</h3>
-            <div class="subheading">Client: Taxspanenr</div>
-            <p class="lead">Description:TaxSpanner is a web-app that handles filing of individual Income Tax Returns (ITR) ,TDS etc.</p>
-            <div class="subheading mb-3">Responsibilities:</div>
-            <ul class="mb-5">
-              <li class="lead"> Gathering requirements & understanding from product team for new feature implementations.</li>
-              <li class="lead"> Work on change requests, production defects and provide solutions to defects raised.</li>
-              <li class="lead"> Co-ordinate with onshore team and help the team members to complete sprint tasks and deliver it successfully</li>
-              <li class="lead"> <b>PROGRAMMING LANGUAGES & TOOLS:</b> Angular Js, angular Material, JavaScript, Bootstrap, HTML5, CSS3, GIT,SASS ,Gulp,webpack,</li> 
-            </ul> 
-          </div>
-        </div>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Project 2: Boac(books of accounts) (Web Application)</h3>
-            <div class="subheading">Client: Taxspanenr</div>
-            <p class="lead">Description: Books of Accounts for creation and handling of ledger.</p>
-            <div class="subheading mb-3">Responsibilities:</div>
-            <ul>
-              <li class="lead"> Gathering requirements & understanding from product team for new feature implementations.</li>
-              <li class="lead"> Work on change requests, production defects and provide solutions to defects raised.</li>
-            </ul>
-            <p class="lead"><b>PROGRAMMING LANGUAGES & TOOLS:</b> Angular Js, Angular Material, JavaScript, Bootstrap, HTML5, CSS3, GIT,SASS ,Gulp,webpack<p></p> 
-          </div>
-        </div>
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Project 3: Blog.taxspanner (Blog)</h3>
-            <div class="subheading">Client: Taxspanenr</div>
-            <p class="lead">Description: This application is kind of personal online journal that is frequently updated and intended for general public consumption.</p>
-            <div class="subheading mb-3">Responsibilities:</div>
-            <ul>
-              <li class="lead"> Gathering requirements & understanding from product team for new feature implementations.</li>
-              <li class="lead"> Work on change requests, production defects and provide solutions to defects raised.</li>
-            </ul> 
-            <p class="lead"><b>PROGRAMMING LANGUAGES & TOOLS:</b> Wordpress,html,css,jquery ,javascript,PHP<p></p>
-          </div>
-        </div>
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
-          <div class="resume-content">
-            <h3 class="mb-0">Project 4: P rismberry.com (Website)</h3>
-            <div class="subheading">Client: Taxspanenr</div>
-            <p class="lead">Description: Prismberry is a Software development organization focussed on cloud based software development.</p>
-            <div class="subheading mb-3">Responsibilities:</div>
-            <ul>
-              <li class="lead"> Gathering requirements & understanding from product team for new feature implementations.</li>
-              <li class="lead"> Work on change requests, production defects and provide solutions to defects raised.</li>
-              <li class="lead"> Co-ordinate with onshore team and help the team members to complete sprint tasks and deliver it successfully</li>
-            </ul>
-            <p class="lead"><b>PROGRAMMING LANGUAGES & TOOLS:</b> HTML ,CSS ,Javascript ,Jquery ,Particals.js,Bootstrape<p></p> 
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="education">
-      <div class="w-100">
-        <h2 class="mb-5">Education</h2>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between">
-          <div class="resume-content">
-            <h3 class="mb-0">Swami Vivekanand Institute of Technology</h3>
-            <div class="subheading mb-3">(Bachelor of Computer Application) Sagar(M.P.)</div>
-          </div>
-          <div class="resume-date text-md-right">
-            <span class="text-primary">2016</span>
-          </div>
-        </div>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between">
-          <div class="resume-content">
-            <h3 class="mb-0">V.V.S.S.School Baran(kota)</h3>
-            <div class="subheading mb-3">Kota Rajasthan(Physics Chemestry Maths)</div>
-            
-          </div>
-          <div class="resume-date text-md-right">
-            <span class="text-primary">2009</span>
-          </div>
-        </div>
-
-        <div class="resume-item d-flex flex-column flex-md-row justify-content-between">
-          <div class="resume-content">
-            <h3 class="mb-0">P.A.V.M.School Dausa Raj Dausa, Rajasthan</h3>
-            <div class="subheading mb-3">Dausa Rajasthan (All subject)</div>
-          </div>
-          <div class="resume-date text-md-right">
-            <span class="text-primary">2007</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="skills">
-      <div class="w-100">
-        <h2 class="mb-5">Skills</h2>
-
-        <div class="subheading mb-3">Programming Languages &amp; Tools</div>
-        <ul class="list-inline dev-icons">
-          <li class="list-inline-item">
-            <i class="fab fa-html5"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-css3-alt"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-js-square"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-angular"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-react"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-node-js"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-sass"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-less"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-wordpress"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-gulp"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-grunt"></i>
-          </li>
-          <li class="list-inline-item">
-            <i class="fab fa-npm"></i>
-          </li>
-        </ul>
-
-        <div class="subheading mb-3">Workflow</div>
-        <ul class="fa-ul mb-0">
-          <li class="lead">
-            <i class="fa-li fa fa-check"></i>
-            Mobile-First, Responsive Design</li>
-          <li class="lead">
-            <i class="fa-li fa fa-check"></i>
-            Cross Browser Testing &amp; Debugging</li>
-          <li class="lead">
-            <i class="fa-li fa fa-check"></i>
-            Cross Functional Teams</li>
-          <li class="lead">
-            <i class="fa-li fa fa-check"></i>
-            Agile Development &amp; Scrum</li>
-        </ul>
-      </div>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="interests">
-      <div class="w-100">
-        <h2 class="mb-5">Interests</h2>
-        <p class="lead">Apart from being a web developer, I enjoy most of my time being outdoors. I enjoy mountain biking, free climbing.</p>
-        <p class="mb-0 lead">When forced indoors, I follow a number of sci-fi and fantasy genre movies and television shows, I am an aspiring chef, and I spend a large amount of my free time exploring the latest technology advancements in the front-end web development world.</p>
-      </div>
-    </section>
-
-    <hr class="m-0">
-
+    <h4 id="hud-title" class="text-sm font-bold text-white">Full-Stack &amp; SaaS Core (Angular v18 + React + Node)</h4>
+    <p id="hud-desc" class="text-xs text-slate-300 mt-1 leading-relaxed">
+      Interactive WebGL architecture: Click any glowing 3D node—including the Career Network SaaS globe, Full-Stack Core, or Career Rings—to inspect live engineering systems.
+    </p>
+    <div class="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+      <span>Drag/Move: <strong class="text-slate-200">3D Parallax</strong></span>
+      <span>Click 3D Nodes: <strong class="text-cyan-300">Inspect</strong></span>
+    </div>
   </div>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Floating 3D Camera & Theme Control Dock (Bottom Right) -->
+  <div class="fixed bottom-4 right-4 z-40 flex items-center gap-2 glass-panel px-3 py-2 rounded-2xl interactive-el border border-white/15">
+    <button id="theme-cycle-btn" type="button" class="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 transition flex items-center gap-1.5 text-xs font-medium" title="Switch 3D Shader Palette">
+      <i data-lucide="palette" class="w-4 h-4 text-rose-400"></i>
+      <span id="theme-label" class="hidden sm:inline">Cyber Angular</span>
+    </button>
+    <button id="speed-toggle-btn" type="button" class="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 transition flex items-center gap-1.5 text-xs font-medium" title="Toggle Warp Speed">
+      <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+      <span id="speed-label" class="hidden sm:inline">1x Orbit</span>
+    </button>
+    <button id="reset-cam-btn" type="button" class="p-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-400/30 transition text-xs font-medium flex items-center gap-1" title="Reset 3D Camera">
+      <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+      <span class="hidden md:inline">Reset Cam</span>
+    </button>
+  </div>
 
-  <!-- Plugin JavaScript -->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-20 right-4 z-50 hidden glass-panel border border-emerald-500/50 text-emerald-200 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-sm interactive-el">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
 
-  <!-- Custom scripts for this template -->
-  <script src="js/resume.min.js"></script>
+  <!-- Top Navigation Bar -->
+  <header class="fixed top-0 left-0 right-0 z-30 glass-nav interactive-el">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <!-- Brand -->
+      <button type="button" data-cam="hero" class="cam-nav-btn flex items-center gap-3 text-left group">
+        <div class="w-10 h-10 rounded-xl angular-gradient p-[1px] shadow-lg shadow-indigo-500/25">
+          <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center font-mono font-bold text-sm tracking-tighter text-white group-hover:bg-transparent transition">
+            HKV
+          </div>
+        </div>
+        <div>
+          <div class="font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-2">
+            Harish Kumar Verma
+            <span class="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 node-pulse"></span>
+              Short Notice (LWD 20 Nov 2026)
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-mono">Senior UI Developer · Angular Tech Lead</p>
+        </div>
+      </button>
 
+      <!-- Desktop Camera Warp Links -->
+      <nav class="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
+        <button type="button" data-cam="hero" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-white bg-indigo-600/80 transition">
+          01. Overview
+        </button>
+        <button type="button" data-cam="project" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-emerald-300 hover:text-white hover:bg-white/5 transition">
+          Live SaaS Project
+        </button>
+        <button type="button" data-cam="skills" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition">
+          02. 3D Skills Matrix
+        </button>
+        <button type="button" data-cam="architecture" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition">
+          03. MFE &amp; AI Lab
+        </button>
+        <button type="button" data-cam="experience" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition">
+          04. Experience (10+ Yrs)
+        </button>
+        <button type="button" data-cam="contact" class="cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition">
+          05. Education &amp; Hire
+        </button>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2">
+        <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-semibold text-emerald-200 items-center gap-1.5 transition">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Live SaaS</span>
+        </a>
+        <button id="open-resume-modal-btn" type="button" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-semibold text-slate-100 flex items-center gap-1.5 transition">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>CV Snapshot</span>
+        </button>
+        <button type="button" data-cam="contact" class="cam-nav-btn hidden sm:inline-flex px-3.5 py-1.5 rounded-xl angular-gradient text-xs font-semibold text-white shadow-lg shadow-rose-500/20 hover:opacity-95 transition items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Connect</span>
+        </button>
+        <button id="mobile-menu-btn" type="button" class="lg:hidden p-2 rounded-xl bg-white/5 text-slate-200 hover:bg-white/10" aria-label="Toggle Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden px-4 pt-2 pb-4 border-t border-white/10 bg-slate-950/95 space-y-1.5">
+      <button type="button" data-cam="hero" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-white bg-indigo-600/40">01. Overview &amp; 3D Core</button>
+      <button type="button" data-cam="project" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-emerald-300 hover:bg-white/5">Featured Live SaaS Project (Career Network)</button>
+      <button type="button" data-cam="skills" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-white/5">02. Technical Skills Matrix</button>
+      <button type="button" data-cam="architecture" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-white/5">03. Micro-Frontend &amp; AI Architecture Lab</button>
+      <button type="button" data-cam="experience" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-white/5">04. Career Timeline (2016–Present)</button>
+      <button type="button" data-cam="contact" class="cam-nav-btn w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-white/5">05. Education &amp; Contact</button>
+    </div>
+  </header>
+
+  <!-- Main Content Layer -->
+  <main id="main-ui-container" class="content-layer pt-24 pb-28 transition-opacity duration-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+
+      <!-- SECTION 1: HERO & FULL-STACK SAAS BUILDER OVERVIEW -->
+      <section id="sec-hero" class="min-h-[84vh] flex flex-col justify-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Left Column: Intro -->
+          <div class="lg:col-span-7 space-y-5 interactive-el">
+            <!-- Status & Availability Badges -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-xs font-mono text-emerald-300">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 node-pulse"></span>
+                Status: Open for Freelance &amp; SaaS Projects
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/30 text-xs font-mono text-indigo-300">
+                Angular v2–v18+ · React · Node.js · MongoDB · MFE
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <p class="text-xs sm:text-sm font-mono uppercase tracking-widest text-cyan-400 flex items-center gap-2">
+                <span>👋 Hi, I'm Harish Kumar Verma</span>
+                <span class="text-slate-500">|</span>
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400"></i>
+                <span>Bengaluru, India · 10+ Years</span>
+              </p>
+              <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08]">
+                Harish Kumar <span class="text-gradient">Verma</span>
+              </h1>
+              <h2 class="text-lg sm:text-2xl font-bold text-slate-200 pt-1">
+                Senior Full Stack Engineer <span class="text-slate-500">|</span> <span class="text-emerald-400">SaaS Builder</span> <span class="text-slate-500">|</span> <span class="text-rose-400">Open for Freelance</span>
+              </h2>
+            </div>
+
+            <!-- About Me Summary Box -->
+            <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-emerald-400 space-y-3 text-sm sm:text-base text-slate-300 leading-relaxed">
+              <p>
+                Experienced <strong class="text-white">Full-Stack Software Engineer, SaaS Builder &amp; Frontend Architect</strong> with <strong class="text-white">10+ years</strong> of industry experience architecting scalable enterprise platforms, real-time reactive applications, and secure microservices.
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-400 font-bold">🚀 Available For:</span>
+                  <span><strong class="text-white">SaaS Building</strong>, <strong class="text-white">Freelance Full-Stack Projects</strong>, <strong class="text-white">Technical Architecture Consulting</strong>, &amp; Short Notice roles (LWD 20 Nov 2026).</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-cyan-400 font-bold">🛠️ Full-Stack Capabilities:</span>
+                  <span>End-to-end development spanning <strong class="text-rose-300">Angular (v2 to v18+)</strong>, <strong class="text-cyan-300">React</strong>, <strong class="text-emerald-300">Node.js</strong>, <strong class="text-slate-100">Express</strong>, <strong class="text-emerald-300">MongoDB</strong>, <strong class="text-indigo-300">TypeScript</strong>, and <strong class="text-purple-300">Micro-Frontends (Module Federation)</strong>.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-indigo-400 font-bold">💡 Core Expertise:</span>
+                  <span>Enterprise UI systems, real-time collaboration platforms, state management (NgRx/RxJS), high-performance database querying, and modern AI integrations (LLMs, Agentic AI, Vector DBs).</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- External Profile & Action Badges Row (From User's GitHub/Portfolio Links) -->
+            <div class="flex flex-wrap items-center gap-2.5 pt-1">
+              <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl fullstack-gradient text-white font-semibold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 hover:scale-[1.02] transition flex items-center gap-2">
+                <i data-lucide="rocket" class="w-4 h-4"></i>
+                <span>Live Project: Career Network</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+              <a href="https://www.linkedin.com/in/harish-verma-831599a7/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-[#0A66C2]/25 hover:bg-[#0A66C2]/40 border border-[#0A66C2]/50 text-sky-200 font-semibold text-xs sm:text-sm transition flex items-center gap-2">
+                <i data-lucide="linkedin" class="w-4 h-4 text-sky-400"></i>
+                <span>LinkedIn</span>
+              </a>
+              <a href="https://medium.com/@harishverma_79323" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-slate-100 font-semibold text-xs sm:text-sm transition flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4 text-amber-300"></i>
+                <span>Medium</span>
+              </a>
+              <a href="https://github.com/harishwordpress/harishcv/raw/master/HarishKumarVerma.pdf" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-400/40 text-indigo-200 font-semibold text-xs sm:text-sm transition flex items-center gap-2">
+                <i data-lucide="download" class="w-4 h-4 text-indigo-300"></i>
+                <span>Download CV</span>
+              </a>
+            </div>
+
+            <!-- Quick CTA Camera Warp Row -->
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <button type="button" data-cam="experience" class="cam-nav-btn px-5 py-3 rounded-xl angular-gradient text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 hover:scale-[1.02] transition flex items-center gap-2">
+                <i data-lucide="orbit" class="w-4 h-4"></i>
+                <span>Fly Through Career Timeline</span>
+              </button>
+              <button type="button" data-cam="architecture" class="cam-nav-btn px-5 py-3 rounded-xl glass-panel hover:bg-white/10 text-slate-100 font-semibold text-sm border border-white/15 transition flex items-center gap-2">
+                <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+                <span>Explore MFE &amp; AI Lab</span>
+              </button>
+              <button type="button" id="hero-copy-email" class="px-4 py-3 rounded-xl glass-panel hover:bg-white/10 text-slate-200 text-xs font-mono border border-white/10 transition flex items-center gap-2" title="Copy Email Address">
+                <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i>
+                <span>harishverma555@gmail.com</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive 3D Full-Stack Holo-Card -->
+          <div class="lg:col-span-5 interactive-el">
+            <div class="glass-panel rounded-3xl p-6 border border-indigo-500/30 tilt-card relative overflow-hidden">
+              <div class="absolute -top-20 -right-20 w-44 h-44 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+              <div class="absolute -bottom-20 -left-20 w-44 h-44 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+              <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl fullstack-gradient flex items-center justify-center shadow-lg">
+                    <i data-lucide="layers" class="w-6 h-6 text-white"></i>
+                  </div>
+                  <div>
+                    <span class="text-[11px] font-mono uppercase tracking-wider text-emerald-400 block">● Full-Stack Telemetry</span>
+                    <h3 class="text-base font-bold text-white">End-to-End Engineering DNA</h3>
+                  </div>
+                </div>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">SaaS &amp; Enterprise</span>
+              </div>
+
+              <!-- Interactive 3D Focus Switcher inside Hero Card -->
+              <div class="space-y-3">
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/40 transition cursor-pointer focus-node-btn" data-node="3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-emerald-300 flex items-center gap-2">
+                      <i data-lucide="globe" class="w-4 h-4"></i>
+                      Live SaaS: Career &amp; Mentorship Platform
+                    </span>
+                    <span class="text-[11px] font-mono text-emerald-400">harish007.duckdns.org</span>
+                  </div>
+                  <p class="text-xs text-slate-300 mt-1.5">
+                    Full-stack social network connecting Job Providers, Job Seekers, Mentors &amp; Mentees with real-time feeds and profile matching.
+                  </p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-rose-500/40 transition cursor-pointer focus-node-btn" data-node="0">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-rose-300 flex items-center gap-2">
+                      <i data-lucide="shield" class="w-4 h-4"></i>
+                      Frontend Architecture (Angular v2–18+ &amp; React)
+                    </span>
+                    <span class="text-[11px] font-mono text-slate-400">MFE &amp; Nx</span>
+                  </div>
+                  <p class="text-xs text-slate-300 mt-1.5">
+                    Module Federation, Nx Monorepos, RxJS, NgRx, Tailwind CSS, Angular Material &amp; CDK design systems.
+                  </p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/40 transition cursor-pointer focus-node-btn" data-node="1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-cyan-300 flex items-center gap-2">
+                      <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                      Backend Microservices, Auth &amp; Agentic AI
+                    </span>
+                    <span class="text-[11px] font-mono text-slate-400">Node · Mongo · LLMs</span>
+                  </div>
+                  <p class="text-xs text-slate-300 mt-1.5">
+                    Node.js, Express.js, MongoDB optimization, Passport.js + JWT RBAC, REST APIs, Agentic AI &amp; Vector DBs.
+                  </p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/40 transition cursor-pointer focus-node-btn" data-node="2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-indigo-300 flex items-center gap-2">
+                      <i data-lucide="server" class="w-4 h-4"></i>
+                      Full-Stack FinTech, Tax &amp; Enterprise SaaS
+                    </span>
+                    <span class="text-[11px] font-mono text-slate-400">10+ Yrs Impact</span>
+                  </div>
+                  <p class="text-xs text-slate-300 mt-1.5">
+                    Eurofins, Devon Software (Exact), Snapcheck.com, and Taxspanner.com—delivering enterprise tax, billing, and B2B e-checks.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Direct Contact Bar -->
+              <div class="mt-5 pt-4 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/5">
+                  <span class="text-slate-400 block text-[10px] font-mono">FREELANCE &amp; NOTICE</span>
+                  <span class="text-emerald-300 font-semibold">Open Now · LWD 20 Nov 2026</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/5">
+                  <span class="text-slate-400 block text-[10px] font-mono">DIRECT PHONE</span>
+                  <span class="text-slate-100 font-mono">+91 9079252481</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: 🚀 FEATURED LIVE PROJECT (CAREER & MENTORSHIP PLATFORM) -->
+      <section id="sec-project" class="space-y-8 interactive-el">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 block">Featured Live Full-Stack SaaS</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">🌐 Career &amp; Mentorship Platform</h2>
+            <p class="text-sm text-slate-300 mt-1">
+              Production full-stack social networking &amp; mentorship ecosystem built from scratch and deployed live.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl fullstack-gradient text-xs sm:text-sm font-bold text-white shadow-xl shadow-emerald-500/20 hover:opacity-95 transition flex items-center gap-2">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              <span>🚀 Live Demo — Visit Platform</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <!-- Left 7 Cols: Project Overview & Interactive Module Switcher -->
+          <div class="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-500/30 tilt-card flex flex-col justify-between space-y-6">
+            <div class="space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-semibold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 node-pulse"></span>
+                  LIVE PRODUCTION SAAS · harish007.duckdns.org
+                </span>
+                <span class="text-xs font-mono text-slate-400">Full-Stack TS/JS Architecture</span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-extrabold text-white">
+                Connecting Job Providers, Job Seekers, Mentors &amp; Mentees
+              </h3>
+              <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                A full-stack social networking platform connecting <strong class="text-white">Job Providers</strong> with <strong class="text-white">Job Seekers</strong>, featuring a dedicated discovery ecosystem for <strong class="text-emerald-300">Mentors &amp; Mentees</strong> to connect, collaborate, and grow.
+              </p>
+
+              <!-- Interactive Capability Tabs -->
+              <div class="pt-2">
+                <div class="text-xs font-mono text-slate-400 mb-2">CLICK MODULE TO INSPECT FULL-STACK IMPLEMENTATION:</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" data-proj-tab="feeds" class="proj-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/25 text-emerald-200 border border-emerald-400/50 transition">
+                    1. Real-Time Feeds
+                  </button>
+                  <button type="button" data-proj-tab="matching" class="proj-tab-btn px-3 py-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+                    2. Mentor Matching
+                  </button>
+                  <button type="button" data-proj-tab="jobs" class="proj-tab-btn px-3 py-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+                    3. Job Marketplace
+                  </button>
+                  <button type="button" data-proj-tab="stack" class="proj-tab-btn px-3 py-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+                    4. Full-Stack Engine
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic Module Inspector Box -->
+              <div id="proj-tab-content" class="p-4 rounded-2xl bg-slate-900/90 border border-white/10 space-y-1.5">
+                <div class="text-xs font-mono text-emerald-400 uppercase" id="proj-tab-tag">MODULE 01 // SOCIAL &amp; ACTIVITY STREAM</div>
+                <h4 class="text-base font-bold text-white" id="proj-tab-title">Real-Time Feeds &amp; Networking Interactions</h4>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed" id="proj-tab-desc">
+                  Interactive social feed enabling professionals to publish updates, share career insights, react, comment, and build high-signal industry connections with responsive state synchronization.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-emerald-300">TypeScript / ES6+</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-cyan-300">Angular / React UI</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-indigo-300">Node.js &amp; Express</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-rose-300">MongoDB &amp; JWT</span>
+              </div>
+              <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-emerald-300 hover:underline flex items-center gap-1">
+                <span>https://harish007.duckdns.org/</span>
+                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right 5 Cols: Target Personas & SaaS Architecture Breakdown -->
+          <div class="lg:col-span-5 glass-panel rounded-3xl p-6 border border-white/10 flex flex-col justify-between space-y-5">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                  <i data-lucide="users" class="w-5 h-5 text-emerald-400"></i>
+                  <span>Target Audience &amp; Ecosystem</span>
+                </h3>
+                <span class="text-xs font-mono text-slate-400">4 Core Personas</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="text-xs font-bold text-emerald-300">Recruiters &amp; Job Providers</div>
+                  <p class="text-xs text-slate-300 mt-1">Post roles, filter verified candidate profiles, and manage hiring pipelines directly.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="text-xs font-bold text-cyan-300">Job Seekers &amp; Professionals</div>
+                  <p class="text-xs text-slate-300 mt-1">Showcase skills, match with tailored openings, and engage with hiring teams.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="text-xs font-bold text-indigo-300">Industry Mentors</div>
+                  <p class="text-xs text-slate-300 mt-1">Offer structured guidance, architecture reviews, and career coaching sessions.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="text-xs font-bold text-rose-300">Mentees &amp; Builders</div>
+                  <p class="text-xs text-slate-300 mt-1">Discover domain experts, request mentorship, and accelerate technical growth.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-emerald-300">NEED A CUSTOM SAAS BUILT?</span>
+                <button type="button" data-cam="contact" class="cam-nav-btn text-xs font-mono text-white underline hover:text-emerald-200">Hire Harish →</button>
+              </div>
+              <p class="text-xs text-slate-300">
+                Harish architects and delivers end-to-end MVPs, enterprise SaaS portals, and Micro-Frontend platforms from database schema to reactive UI.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: 3D FULL-STACK TECHNICAL SKILLS MATRIX -->
+      <section id="sec-skills" class="space-y-8 interactive-el">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block">02 // Full-Stack Constellation Matrix</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Tech Stack &amp; Tooling</h2>
+            <p class="text-sm text-slate-300 mt-1">Click any category to filter the 3D skill nodes or select any skill chip to inspect real-world full-stack project context.</p>
+          </div>
+
+          <!-- Category Filter Pills (Preserving exact labels + full-stack coverage) -->
+          <div id="skill-filter-bar" class="flex flex-wrap gap-1.5">
+            <button type="button" data-cat="all" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition">All (38)</button>
+            <button type="button" data-cat="Languages & Frameworks" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">Languages &amp; Frameworks</button>
+            <button type="button" data-cat="Architecture" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">Architecture</button>
+            <button type="button" data-cat="AI & Emerging Tech" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">AI &amp; Emerging Tech</button>
+            <button type="button" data-cat="Tools & Cloud" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">Tools &amp; Cloud</button>
+            <button type="button" data-cat="Databases & APIs" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">Databases &amp; APIs</button>
+            <button type="button" data-cat="Practices" class="skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition">Practices</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Skill Spotlight Banner -->
+        <div id="skill-spotlight" class="glass-panel rounded-2xl p-4 sm:p-5 border border-cyan-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-start sm:items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center shrink-0">
+              <i data-lucide="sparkles" class="w-5 h-5 text-cyan-300"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="spotlight-name" class="text-base font-bold text-white">Angular (v2 to v18+), React &amp; Node.js</h3>
+                <span id="spotlight-cat" class="text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">Languages &amp; Frameworks</span>
+              </div>
+              <p id="spotlight-usage" class="text-xs sm:text-sm text-slate-300 mt-1">
+                10+ years of end-to-end full-stack mastery across Eurofins, Devon Software, Snapcheck, Taxspanner, and live SaaS platforms—combining Angular (AngularJS to v18+), React, RxJS, NgRx, Node.js, Express, and MongoDB.
+              </p>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
+            <span class="text-xs font-mono text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-lg">Production Verified</span>
+          </div>
+        </div>
+
+        <!-- 6 Skill Category Cards Grid -->
+        <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 4: INTERACTIVE MICRO-FRONTEND, FULL-STACK & AI ARCHITECTURE SIMULATOR -->
+      <section id="sec-architecture" class="space-y-8 interactive-el">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-rose-400 block">03 // Interactive System Blueprint</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Full-Stack, Micro-Frontend &amp; AI Architecture Lab</h2>
+            <p class="text-sm text-slate-300 mt-1">
+              Explore how Harish decouples enterprise deployments using Angular (v2–v18+) / React Module Federation, Shared CDK Libraries, Node.js/MongoDB microservices, and LLM/Vector AI pipelines.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="simulate-deploy-btn" type="button" class="px-4 py-2 rounded-xl angular-gradient text-xs font-semibold text-white shadow-lg flex items-center gap-2 hover:opacity-95 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <span>Simulate MFE + AI Pipeline</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <!-- Left 7 Cols: Interactive Layer Stack -->
+          <div class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 border border-white/10 space-y-4">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/10 pb-3">
+              <span>FULL-STACK ENTERPRISE TOPOLOGY (CLICK ANY LAYER)</span>
+              <span id="sim-status" class="text-emerald-400">● READY</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="arch-nodes-container">
+              <button type="button" data-arch="shell" class="arch-layer-btn text-left p-4 rounded-2xl bg-indigo-500/15 border-2 border-indigo-500 transition hover:bg-indigo-500/25">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-indigo-300">LAYER 01 · HOST SHELL</span>
+                  <i data-lucide="layout-grid" class="w-4 h-4 text-indigo-400"></i>
+                </div>
+                <div class="font-bold text-white text-sm mt-1">Angular 13+ Host &amp; Module Federation</div>
+                <div class="text-xs text-slate-300 mt-1">Dynamic remote loading, Nx Monorepo orchestration &amp; zero-downtime independent deploys.</div>
+              </button>
+
+              <button type="button" data-arch="ai" class="arch-layer-btn text-left p-4 rounded-2xl bg-white/5 border-2 border-white/10 transition hover:border-cyan-400/50">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-cyan-300">LAYER 02 · INTELLIGENCE</span>
+                  <i data-lucide="bot" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div class="font-bold text-white text-sm mt-1">LLMs, Agentic AI &amp; Vector DBs</div>
+                <div class="text-xs text-slate-300 mt-1">Semantic retrieval, prompt-engineered state creation, and AI-assisted feature velocity.</div>
+              </button>
+
+              <button type="button" data-arch="ui" class="arch-layer-btn text-left p-4 rounded-2xl bg-white/5 border-2 border-white/10 transition hover:border-rose-400/50">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-rose-300">LAYER 03 · DESIGN SYSTEM</span>
+                  <i data-lucide="component" class="w-4 h-4 text-rose-400"></i>
+                </div>
+                <div class="font-bold text-white text-sm mt-1">Shared UI Library (Material &amp; CDK)</div>
+                <div class="text-xs text-slate-300 mt-1">Reusable accessible components, custom query builders, dynamic charts &amp; data tables.</div>
+              </button>
+
+              <button type="button" data-arch="state" class="arch-layer-btn text-left p-4 rounded-2xl bg-white/5 border-2 border-white/10 transition hover:border-emerald-400/50">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-emerald-300">LAYER 04 · REACTIVE STATE &amp; API</span>
+                  <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div class="font-bold text-white text-sm mt-1">RxJS, NgRx, Node.js &amp; Secure APIs</div>
+                <div class="text-xs text-slate-300 mt-1">Reactive streams, Passport.js + JWT auth pipelines, MongoDB query optimization &amp; Plaid/Java APIs.</div>
+              </button>
+            </div>
+
+            <!-- Live Telemetry Progress Bars -->
+            <div class="pt-3 border-t border-white/10 grid grid-cols-3 gap-3 text-center">
+              <div class="p-3 rounded-xl bg-slate-900/70">
+                <div class="text-[11px] font-mono text-slate-400">DEPLOYMENT COUPLING</div>
+                <div id="metric-coupling" class="text-sm sm:text-base font-bold text-emerald-400 font-mono mt-0.5">MFE + Microservices</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/70">
+                <div class="text-[11px] font-mono text-slate-400">STATE &amp; DATABASE</div>
+                <div id="metric-state" class="text-sm sm:text-base font-bold text-cyan-400 font-mono mt-0.5">RxJS/NgRx + MongoDB</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/70">
+                <div class="text-[11px] font-mono text-slate-400">QUALITY GATE</div>
+                <div id="metric-quality" class="text-sm sm:text-base font-bold text-indigo-400 font-mono mt-0.5">Jest + AWS / Azure</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 5 Cols: Detailed Inspector Panel -->
+          <div class="lg:col-span-5 glass-panel rounded-3xl p-6 border border-indigo-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span id="arch-detail-badge" class="text-xs font-mono px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  ANGULAR v18+ · REACT · MODULE FEDERATION · NX
+                </span>
+                <span class="text-xs font-mono text-slate-400">3D Synced</span>
+              </div>
+              <h3 id="arch-detail-title" class="text-xl font-bold text-white">Angular &amp; React Host Shell + Micro-Frontend Topology</h3>
+              <p id="arch-detail-desc" class="text-sm text-slate-300 mt-2 leading-relaxed">
+                At Eurofins and Devon Software, Harish architected modular platforms where independent squads build, test (Jest), and deploy remote Angular (v2–v18+) &amp; React bundles backed by Node.js microservices.
+              </p>
+
+              <div class="mt-4 space-y-2" id="arch-detail-bullets">
+                <div class="flex items-start gap-2 text-xs text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                  <span>Webpack Module Federation &amp; Nx Monorepo workspace boundaries.</span>
+                </div>
+                <div class="flex items-start gap-2 text-xs text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                  <span>Shared singleton services for JWT authentication, Tailwind/Material theming, and telemetry.</span>
+                </div>
+                <div class="flex items-start gap-2 text-xs text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                  <span>Mentored engineering teams on modern full-stack &amp; micro-frontend patterns.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-white/10">
+              <div class="text-[11px] font-mono text-slate-400 mb-2">TECH STACK IN THIS LAYER</div>
+              <div id="arch-detail-tags" class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">Angular v2–v18+</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">React</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">Module Federation</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">Nx Monorepo</span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">Tailwind CSS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: PROFESSIONAL EXPERIENCE TIMELINE (2016 - PRESENT) -->
+      <section id="sec-experience" class="space-y-8 interactive-el">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-indigo-400 block">04 // Chronological 3D Corridor</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Full-Stack Experience Timeline (2016 – Present)</h2>
+            <p class="text-sm text-slate-300 mt-1">
+              Click any company milestone to focus the 3D camera on its orbital ring and inspect full architectural contributions.
+            </p>
+          </div>
+
+          <!-- Company Quick-Jump Buttons -->
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" data-exp="0" class="exp-jump-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-200 border border-rose-500/40 hover:bg-rose-500/30 transition">
+              Eurofins (2025–Present)
+            </button>
+            <button type="button" data-exp="1" class="exp-jump-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+              Devon Software (2021–2025)
+            </button>
+            <button type="button" data-exp="2" class="exp-jump-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+              Snapcheck (2019–2021)
+            </button>
+            <button type="button" data-exp="3" class="exp-jump-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition">
+              Taxspanner (2016–2019)
+            </button>
+          </div>
+        </div>
+
+        <!-- Consolidated Terminal Tree View (From User's Full-Stack Summary) -->
+        <div class="glass-panel rounded-3xl p-5 sm:p-6 border border-indigo-500/30 font-mono text-xs sm:text-sm text-slate-200 overflow-x-auto">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-3 text-xs text-slate-400">
+            <span class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span class="ml-2 text-indigo-300">harish@fullstack-architect:~/experience$ tree --timeline</span>
+            </span>
+            <span class="text-emerald-400">10+ Years Full-Stack &amp; UI</span>
+          </div>
+          <pre class="leading-relaxed text-slate-200 whitespace-pre-wrap">├── <strong class="text-rose-400">Lead / Senior Full Stack Engineer (Product &amp; Platform)</strong>
+│   └── <strong class="text-white">Eurofins &amp; Devon Software (2021 – Present)</strong>
+│       • Built enterprise tax, billing, and accounting systems using Angular (v2–v18+), Nx Monorepo, and Node.js microservices.
+│       • Architected reusable design systems and modular micro-frontends with dynamic routing.
+│       • Embedded AI toolchains and automated testing frameworks (Jest) to improve release velocity.
+│
+├── <strong class="text-cyan-400">Full Stack Developer</strong>
+│   └── <strong class="text-white">Snapcheck.com (2019 – 2021)</strong>
+│       • Engineered digital paperless check-issuance rails using Node.js, Express, and MongoDB.
+│       • Built role-based access control (Passport.js/JWT), complex query builders, and real-time dashboard analytics.
+│
+└── <strong class="text-emerald-400">UI Developer</strong>
+    └── <strong class="text-white">Taxspanner.com (2016 – 2019)</strong>
+        • Developed interactive income tax return (ITR) calculators and real-time TDS processing interfaces using AngularJS.</pre>
+        </div>
+
+        <div id="experience-cards-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 6: EDUCATION, FREELANCE & RECRUITER CONTACT HUB -->
+      <section id="sec-contact" class="space-y-8 interactive-el">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 block">05 // Academic Foundation, Freelance &amp; Direct Connect</span>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-1">Education &amp; Contact</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left 5 Cols: Education + Direct Contact Details -->
+          <div class="lg:col-span-5 space-y-6">
+            <!-- Education Card -->
+            <div class="glass-panel rounded-3xl p-6 border border-white/10 space-y-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-5 h-5 text-indigo-300"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-white">Academic Credentials</h3>
+                  <p class="text-xs text-slate-400">Computer Applications</p>
+                </div>
+              </div>
+
+              <div class="space-y-3 pt-1">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono text-cyan-300">POSTGRADUATE DEGREE</span>
+                    <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">2021</span>
+                  </div>
+                  <h4 class="text-sm sm:text-base font-bold text-white mt-1">Master of Computer Applications (MCA)</h4>
+                  <p class="text-xs text-slate-300 mt-0.5">Swami Vivekanand Subharti University</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono text-indigo-300">UNDERGRADUATE DEGREE</span>
+                    <span class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-200">2016</span>
+                  </div>
+                  <h4 class="text-sm sm:text-base font-bold text-white mt-1">Bachelor of Computer Applications (BCA)</h4>
+                  <p class="text-xs text-slate-300 mt-0.5">Swami Vivekananda University</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verified Contact Channels Card -->
+            <div class="glass-panel rounded-3xl p-6 border border-emerald-500/30 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white">Direct Contact Channels</h3>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Bengaluru, India
+                </span>
+              </div>
+
+              <div class="space-y-2.5 text-xs sm:text-sm">
+                <button type="button" data-copy="harishverma555@gmail.com" class="copy-btn w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <span class="flex items-center gap-2.5 text-slate-200">
+                    <i data-lucide="mail" class="w-4 h-4 text-rose-400"></i>
+                    <span class="font-mono">harishverma555@gmail.com</span>
+                  </span>
+                  <span class="text-[11px] font-mono text-indigo-300">Copy</span>
+                </button>
+
+                <button type="button" data-copy="+91 9079252481" class="copy-btn w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <span class="flex items-center gap-2.5 text-slate-200">
+                    <i data-lucide="phone" class="w-4 h-4 text-emerald-400"></i>
+                    <span class="font-mono">+91 9079252481</span>
+                  </span>
+                  <span class="text-[11px] font-mono text-indigo-300">Copy</span>
+                </button>
+
+                <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition">
+                  <span class="flex items-center gap-2.5 text-emerald-200">
+                    <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+                    <span class="font-mono truncate">Live Project: harish007.duckdns.org</span>
+                  </span>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-emerald-400"></i>
+                </a>
+
+                <a href="https://www.linkedin.com/in/harish-verma-831599a7/" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <span class="flex items-center gap-2.5 text-slate-200">
+                    <i data-lucide="linkedin" class="w-4 h-4 text-cyan-400"></i>
+                    <span class="font-mono truncate">linkedin.com/in/harish-verma-831599a7</span>
+                  </span>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i>
+                </a>
+
+                <a href="https://medium.com/@harishverma_79323" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <span class="flex items-center gap-2.5 text-slate-200">
+                    <i data-lucide="book-open" class="w-4 h-4 text-amber-400"></i>
+                    <span class="font-mono truncate">medium.com/@harishverma_79323</span>
+                  </span>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i>
+                </a>
+
+                <a href="https://github.com/harishwordpress/harishcv/raw/master/HarishKumarVerma.pdf" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between p-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition">
+                  <span class="flex items-center gap-2.5 text-indigo-200">
+                    <i data-lucide="file-down" class="w-4 h-4 text-indigo-400"></i>
+                    <span class="font-mono truncate">Download Official CV (PDF)</span>
+                  </span>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 7 Cols: Interactive Recruiter / Freelance / SaaS Composer -->
+          <div class="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 border border-indigo-500/30">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
+              <div>
+                <h3 class="text-xl font-bold text-white">Start a SaaS Build, Freelance Project, or Interview</h3>
+                <p class="text-xs text-slate-300 mt-0.5">
+                  Open for <strong class="text-emerald-300">Freelance &amp; SaaS Projects</strong> and short-notice roles (Last Working Day: <strong class="text-emerald-300">20 Nov 2026</strong>).
+                </p>
+              </div>
+              <span class="w-10 h-10 rounded-xl angular-gradient flex items-center justify-center shrink-0">
+                <i data-lucide="send" class="w-5 h-5 text-white"></i>
+              </span>
+            </div>
+
+            <form id="contact-form" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="recruiter-name" class="block text-xs font-mono text-slate-300 mb-1.5">YOUR NAME / COMPANY</label>
+                  <input id="recruiter-name" type="text" placeholder="e.g., Priya Sharma · SaaS Founder / TechCorp" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label for="role-focus" class="block text-xs font-mono text-slate-300 mb-1.5">ROLE / PROJECT FOCUS</label>
+                  <select id="role-focus" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <option value="Senior Full Stack Engineer (Angular + React + Node.js)">Senior Full Stack Engineer (Angular + React + Node.js)</option>
+                    <option value="SaaS MVP & Full-Stack Platform Build (Freelance)">SaaS MVP &amp; Full-Stack Platform Build (Freelance)</option>
+                    <option value="Angular Technical Lead (Micro Frontends)">Angular Technical Lead (Micro Frontends)</option>
+                    <option value="Full-Stack AI Integration (LLMs, Agentic AI & Vector DB)">Full-Stack AI Integration (LLMs, Agentic AI &amp; Vector DB)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="recruiter-msg" class="block text-xs font-mono text-slate-300 mb-1.5">MESSAGE / PROJECT OR INTERVIEW DETAILS</label>
+                <textarea id="recruiter-msg" rows="3" placeholder="Hi Harish, we explored your Career & Mentorship SaaS platform and 10+ years of full-stack Angular, React, Node.js, and MongoDB experience..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/15 text-sm text-white focus:outline-none focus:border-indigo-500"></textarea>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                <button type="submit" class="px-5 py-2.5 rounded-xl angular-gradient text-xs sm:text-sm font-semibold text-white shadow-lg hover:opacity-95 transition flex items-center gap-2">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  <span>Generate &amp; Copy Outreach Email</span>
+                </button>
+                <a id="mailto-direct-link" href="mailto:harishverma555@gmail.com?subject=Full-Stack%20%2F%20SaaS%20Opportunity%20for%20Harish%20Kumar%20Verma" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs sm:text-sm font-medium text-slate-200 border border-white/15 transition flex items-center gap-2">
+                  <i data-lucide="external-link" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Open Email Client</span>
+                </a>
+              </div>
+            </form>
+
+            <!-- Generated Outreach Preview Box -->
+            <div id="outreach-preview-box" class="hidden mt-4 p-4 rounded-2xl bg-slate-950/90 border border-emerald-500/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono text-emerald-400">✓ READY TO SEND · COPIED TO CLIPBOARD</span>
+                <button type="button" id="copy-generated-msg-btn" class="text-xs font-mono text-indigo-300 hover:underline">Copy Again</button>
+              </div>
+              <pre id="outreach-preview-text" class="text-xs text-slate-200 whitespace-pre-wrap font-mono leading-relaxed"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- CV Snapshot Modal -->
+  <div id="resume-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 interactive-el">
+    <div class="glass-panel max-w-3xl w-full max-h-[86vh] rounded-3xl border border-white/20 overflow-hidden flex flex-col">
+      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-900/80">
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-white">Harish Kumar Verma — Complete Full-Stack &amp; SaaS CV Summary</h3>
+          <p class="text-xs text-slate-400 font-mono">Senior Full Stack Engineer · SaaS Builder · Frontend Architect</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="https://github.com/harishwordpress/harishcv/raw/master/HarishKumarVerma.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center gap-1.5 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Download PDF</span>
+          </a>
+          <button id="close-resume-modal-btn" type="button" class="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-5 text-xs sm:text-sm text-slate-200">
+        <div class="flex flex-wrap justify-between gap-2 p-3.5 rounded-2xl bg-white/5 border border-white/10 font-mono text-xs">
+          <span>📞 +91 9079252481</span>
+          <span>✉️ harishverma555@gmail.com</span>
+          <span>🌐 <a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-300 underline">harish007.duckdns.org</a></span>
+          <span class="text-emerald-300">⚡ Open for Freelance &amp; SaaS (LWD 20 Nov 2026)</span>
+        </div>
+        <div>
+          <h4 class="font-mono text-xs uppercase text-indigo-400 mb-1">Professional Summary</h4>
+          <p class="text-slate-300 leading-relaxed">
+            Experienced Full-Stack Software Engineer, SaaS Builder &amp; Frontend Architect with 10+ years of industry experience architecting scalable enterprise platforms, real-time reactive applications, and secure microservices. End-to-end capabilities spanning Angular (v2 to v18+), React, Node.js, Express, MongoDB, TypeScript, and Micro-Frontends (Module Federation), alongside modern AI integrations (LLMs, Agentic AI, Vector Databases).
+          </p>
+        </div>
+        <div>
+          <h4 class="font-mono text-xs uppercase text-emerald-400 mb-1">Featured Live SaaS Project</h4>
+          <p class="text-slate-300 leading-relaxed">
+            <strong class="text-white">Career &amp; Mentorship Platform (<a href="https://harish007.duckdns.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-300 underline">harish007.duckdns.org</a>):</strong> A full-stack social networking platform connecting Job Providers with Job Seekers, featuring a dedicated discovery ecosystem for Mentors &amp; Mentees with real-time feeds, profile matching, networking interactions, and job listings.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-mono text-xs uppercase text-cyan-400 mb-2">Career Progression</h4>
+          <ul class="space-y-2.5 text-slate-300">
+            <li><strong class="text-white">Eurofins &amp; Devon Software</strong> — Lead / Senior Full Stack Engineer <span class="text-xs font-mono text-rose-300">(2021 – Present)</span>: Built enterprise tax, billing, and accounting systems using Angular (v2–v18+), Nx Monorepo, and Node.js microservices; architected reusable design systems and modular micro-frontends; embedded LLMs, Agentic AI, Vector DBs, and Jest automated testing.</li>
+            <li><strong class="text-white">Snapcheck.com (Product-Based)</strong> — Full Stack Developer <span class="text-xs font-mono text-cyan-300">(Jul 2019 – May 2021)</span>: Engineered digital paperless B2B check-issuance rails using Node.js, Express, and MongoDB; built role-based access control (Passport.js/JWT), custom query builders, and real-time dashboard analytics.</li>
+            <li><strong class="text-white">Taxspanner.com (Product-Based)</strong> — UI Developer <span class="text-xs font-mono text-emerald-300">(Feb 2016 – Jul 2019)</span>: Developed interactive Income Tax Return (ITR) calculators and real-time TDS/GST processing interfaces using AngularJS &amp; Angular Material.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-mono text-xs uppercase text-emerald-400 mb-1">Education</h4>
+          <p class="text-slate-300">• <strong>MCA</strong> — Swami Vivekanand Subharti University (2021)<br>• <strong>BCA</strong> — Swami Vivekananda University (2016)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Data, 3D WebGL Engine & Interactive Controllers -->
+  <script>
+    // ==========================================
+    // 1. CV STRUCTURED DATA (FULL-STACK & SAAS)
+    // ==========================================
+    const SKILL_CATEGORIES = [
+      {
+        category: 'Languages & Frameworks',
+        icon: 'code-2',
+        accent: 'rose',
+        skills: [
+          { name: 'Angular (AngularJS, v2–v18+)', usage: 'Flagship specialization: 10+ years architecting complex enterprise UIs, migrating AngularJS to modern Angular v18+.' },
+          { name: 'React', usage: 'Component-driven interactive SaaS interfaces, hooks, and modern full-stack web applications.' },
+          { name: 'TypeScript', usage: 'Strictly-typed end-to-end enterprise architecture across Angular, React, and Node.js microservices.' },
+          { name: 'JavaScript (ES6+)', usage: 'Core language across 10+ years building high-performance enterprise SPAs and full-stack platforms.' },
+          { name: 'Node.js', usage: 'Engineered scalable backend microservices, digital check-issuance rails, and SaaS APIs.' },
+          { name: 'Express.js', usage: 'RESTful API gateways, authentication middleware, and server-side orchestration.' },
+          { name: 'RxJS', usage: 'Reactive asynchronous data streams, state composition, and real-time dashboard event pipelines.' },
+          { name: 'NgRx', usage: 'Predictable Redux-pattern enterprise state management across complex multi-module Angular apps.' },
+          { name: 'Tailwind CSS', usage: 'Utility-first responsive UI systems and sleek modern SaaS interfaces.' },
+          { name: 'Angular Material & CDK', usage: 'Engineered shared enterprise UI component libraries at Devon Software, Eurofins, and Taxspanner.' },
+          { name: 'HTML5 & CSS3', usage: 'Semantic, accessible, responsive, cross-browser enterprise markup and styling.' },
+          { name: 'Sass / SCSS', usage: 'Modular theme architectures, design tokens, and reusable component stylesheets.' }
+        ]
+      },
+      {
+        category: 'Architecture',
+        icon: 'boxes',
+        accent: 'indigo',
+        skills: [
+          { name: 'Micro Frontend Architecture', usage: 'Architected decoupled multi-team front-end systems at Eurofins & Devon Software to scale releases independently.' },
+          { name: 'Module Federation', usage: 'Dynamic runtime module loading across distributed Angular & React applications.' },
+          { name: 'Nx Monorepo', usage: 'Managed enterprise Angular & Node.js monorepos with strict library boundaries and fast cached builds.' },
+          { name: 'Full-Stack SaaS Architecture', usage: 'Designed and deployed the live Career & Mentorship Platform (harish007.duckdns.org) from DB to UI.' },
+          { name: 'Reusable Component Libraries', usage: 'Built and maintained internal Angular Material & CDK component kits consumed across product teams.' },
+          { name: 'Responsive & Cross-Browser Design', usage: 'Multi-device responsive layouts verified across desktop, tablet, and mobile viewports.' }
+        ]
+      },
+      {
+        category: 'AI & Emerging Tech',
+        icon: 'cpu',
+        accent: 'cyan',
+        skills: [
+          { name: 'LLMs', usage: 'Spearheaded integration of Large Language Models into enterprise product features at Eurofins.' },
+          { name: 'Agentic AI', usage: 'Designed autonomous agentic AI workflows integrated into modern full-stack product experiences.' },
+          { name: 'Vector Databases', usage: 'Connected semantic search and vector embeddings to power intelligent front-end & backend workflows.' },
+          { name: 'Prompt Engineering', usage: 'Applied structured prompt engineering across planning and state-creation phases.' },
+          { name: 'AI-Assisted Development', usage: 'Embedded AI toolchains to accelerate end-to-end feature delivery and mentored engineering squads.' }
+        ]
+      },
+      {
+        category: 'Tools & Cloud',
+        icon: 'cloud-cog',
+        accent: 'amber',
+        skills: [
+          { name: 'Jest', usage: 'Automated unit and integration testing frameworks to ensure high release velocity and stability.' },
+          { name: 'Git', usage: 'Distributed version control, branching strategies, and peer code reviews.' },
+          { name: 'AWS', usage: 'Cloud infrastructure integration and scalable full-stack hosting workflows.' },
+          { name: 'Azure DevOps', usage: 'Enterprise CI/CD pipelines, board management, and automated release workflows.' },
+          { name: 'Docker', usage: 'Containerized development and consistent CI/CD deployment environments.' },
+          { name: 'Webpack & Gulp', usage: 'Custom bundle optimization, Module Federation configurations, and asset pipelines.' },
+          { name: 'Jenkins (CI/CD)', usage: 'Automated build, unit test, and enterprise deployment pipelines.' },
+          { name: 'VS Code & WebStorm', usage: 'Primary modern TypeScript/Full-Stack IDEs with AI-assisted workflows.' }
+        ]
+      },
+      {
+        category: 'Databases & APIs',
+        icon: 'database',
+        accent: 'emerald',
+        skills: [
+          { name: 'MongoDB', usage: 'Designed schemas and optimized complex MongoDB queries at Snapcheck and live SaaS platforms.' },
+          { name: 'REST APIs', usage: 'Contract design, pagination, caching, and fault-tolerant full-stack integration.' },
+          { name: 'Passport.js', usage: 'Engineered role-based authentication strategies and secure Node.js middleware.' },
+          { name: 'JWT (JSON Web Tokens)', usage: 'Stateless role-based access control (RBAC) across Node.js and Java backends.' },
+          { name: 'Java APIs', usage: 'Integrated JWT authentication and enterprise backend services via Java APIs.' },
+          { name: 'Plaid APIs', usage: 'Connected secure banking and B2B digital e-check verification interfaces at Snapcheck.' }
+        ]
+      },
+      {
+        category: 'Practices',
+        icon: 'award',
+        accent: 'purple',
+        skills: [
+          { name: 'SaaS Building & Freelance', usage: 'Available for custom SaaS MVP development, full-stack projects, and technical architecture consulting.' },
+          { name: 'Agile / Scrum', usage: '10+ years delivering sprint milestones in cross-functional onshore/offshore Agile teams.' },
+          { name: 'Unit Testing (Jest)', usage: 'Enforced high code coverage and regression safety across Angular, React, and Node.js modules.' },
+          { name: 'Code Reviews', usage: 'Established full-stack quality standards, security checks, and architectural consistency.' },
+          { name: 'Technical Mentorship', usage: 'Mentored engineers and led knowledge-sharing sessions on AI adoption and Angular/Full-Stack best practices.' },
+          { name: 'Performance Optimization', usage: 'Bundle splitting, change detection tuning, and MongoDB query speed optimization.' }
+        ]
+      }
+    ];
+
+    const EXPERIENCES = [
+      {
+        id: 0,
+        role: 'Lead / Senior Full Stack Engineer',
+        company: 'Eurofins (Product-Based)',
+        period: 'Jun 2025 – Present',
+        badge: 'Current Role · Full-Stack, MFE & AI Lead',
+        color: '#f43f5e',
+        highlights: [
+          'Architected and developed scalable enterprise applications using modern Angular paradigms (v2–v18+), Micro Frontend architectures, and Node.js microservices to decouple deployments.',
+          'Spearheaded the integration of AI-driven capabilities into product features, leveraging LLMs, Agentic AI, and Vector Databases.',
+          'Applied advanced Prompt Engineering and embedded AI toolchains & automated testing frameworks (Jest) to accelerate end-to-end release velocity.',
+          'Mentored engineering teams and led knowledge-sharing sessions on AI adoption and modern full-stack architectural best practices.'
+        ],
+        tags: ['Angular v18+', 'Micro Frontends', 'Node.js', 'LLMs & Agentic AI', 'Vector Databases', 'Jest']
+      },
+      {
+        id: 1,
+        role: 'Senior Full Stack / UI Engineer',
+        company: 'Devon Software (Client: Exact, Benelux)',
+        period: 'May 2021 – Jun 2025',
+        badge: '4 Years · Enterprise Tax, Billing & Accounting Systems',
+        color: '#6366f1',
+        highlights: [
+          'Built enterprise tax, billing, and accounting systems for Exact (a leading business software provider in the Benelux market) using Angular, Nx Monorepo, and Node.js microservices.',
+          'Architected and maintained reusable design systems (Angular Material & CDK) and modular micro-frontends with dynamic routing.',
+          'Implemented complex new features and ensured high code quality through rigorous automated unit testing (Jest / Angular) and Azure DevOps CI/CD.',
+          'Integrated advanced Node.js libraries to enhance application experience and reduce overall development time.'
+        ],
+        tags: ['Angular', 'Nx Monorepo', 'Node.js Microservices', 'Angular Material & CDK', 'Jest', 'Azure DevOps']
+      },
+      {
+        id: 2,
+        role: 'Full Stack Developer',
+        company: 'Snapcheck.com (Product-Based)',
+        period: 'Jul 2019 – May 2021',
+        badge: 'FinTech · Paperless B2B Digital E-Check Rails',
+        color: '#06b6d4',
+        highlights: [
+          'Engineered digital paperless B2B check-issuance rails and internal admin dashboards using Node.js, Express, Angular, and MongoDB.',
+          'Built role-based access control (RBAC) and secure authentication pipelines using Passport.js (Node) and JWT via a Java backend.',
+          'Optimized complex MongoDB queries, significantly improving application speed and real-time analytics retrieval times.',
+          'Built advanced UI features from scratch, including custom query builders, pagination, data tables, dynamic graphs, date-ranges, and JSON-to-Excel export.'
+        ],
+        tags: ['Node.js', 'Express.js', 'MongoDB', 'Passport.js & JWT', 'Angular', 'Plaid APIs']
+      },
+      {
+        id: 3,
+        role: 'UI Developer',
+        company: 'Taxspanner.com (Product-Based)',
+        period: 'Feb 2016 – Jul 2019',
+        badge: 'FinTech · Interactive ITR & Real-Time TDS Interfaces',
+        color: '#10b981',
+        highlights: [
+          'Developed interactive individual Income Tax Return (ITR) calculators and real-time TDS processing interfaces, translating complex taxation and GST logic into intuitive dashboards.',
+          'Built scalable front-end architecture using AngularJS, Angular Material design specifications, and ES6.',
+          'Supported and optimized a high-volume codebase for scale, debugging high-priority defects and deploying critical patches.'
+        ],
+        tags: ['AngularJS & Angular', 'Angular Material', 'JavaScript (ES6)', 'ITR Calculators', 'Real-Time TDS Dashboards']
+      }
+    ];
+
+    const PROJECT_TABS = {
+      feeds: {
+        tag: 'MODULE 01 // SOCIAL & ACTIVITY STREAM',
+        title: 'Real-Time Feeds & Networking Interactions',
+        desc: 'Interactive social feed enabling professionals to publish updates, share career insights, react, comment, and build high-signal industry connections with responsive state synchronization.'
+      },
+      matching: {
+        tag: 'MODULE 02 // MENTORSHIP DISCOVERY ENGINE',
+        title: 'Dedicated Mentor & Mentee Matching Ecosystem',
+        desc: 'Structured discovery workflows connecting domain mentors with mentees based on technical stack, career goals, and availability for 1-on-1 growth and collaboration.'
+      },
+      jobs: {
+        tag: 'MODULE 03 // TALENT & RECRUITMENT HUB',
+        title: 'Job Provider & Job Seeker Marketplace',
+        desc: 'End-to-end job publishing, candidate profile matching, and direct recruiter-applicant interaction designed to streamline technical hiring.'
+      },
+      stack: {
+        tag: 'MODULE 04 // FULL-STACK ARCHITECTURE',
+        title: 'TypeScript, Node.js, Express & MongoDB Engine',
+        desc: 'Engineered with a responsive modern UI, RESTful Node.js/Express APIs, JWT authentication, and optimized MongoDB collections deployed at harish007.duckdns.org.'
+      }
+    };
+
+    const ARCH_LAYERS = {
+      shell: {
+        badge: 'ANGULAR v18+ · REACT · MODULE FEDERATION · NX',
+        title: 'Angular & React Host Shell + Micro-Frontend Topology',
+        desc: 'At Eurofins and Devon Software, Harish architected modular platforms where independent squads build, test (Jest), and deploy remote Angular (v2–v18+) & React bundles backed by Node.js microservices.',
+        bullets: [
+          'Webpack Module Federation & Nx Monorepo workspace boundaries.',
+          'Shared singleton services for JWT authentication, Tailwind/Material theming, and telemetry.',
+          'Mentored engineering teams on modern full-stack & micro-frontend patterns.'
+        ],
+        tags: ['Angular v2–v18+', 'React', 'Module Federation', 'Nx Monorepo', 'Tailwind CSS'],
+        metrics: { coupling: 'MFE + Microservices', state: 'RxJS/NgRx + MongoDB', quality: 'Jest + AWS / Azure' }
+      },
+      ai: {
+        badge: 'LLMs · AGENTIC AI · VECTOR DB',
+        title: 'AI-Driven Product Features & Prompt-Engineered State',
+        desc: 'At Eurofins, Harish spearheaded the integration of Large Language Models, Agentic AI workflows, and Vector Databases directly into enterprise UI & backend applications while accelerating delivery via AI toolchains.',
+        bullets: [
+          'Semantic vector search & contextual LLM response streaming in Angular/React.',
+          'Advanced Prompt Engineering applied to planning and state-creation phases.',
+          'Led team-wide knowledge-sharing sessions on practical AI adoption.'
+        ],
+        tags: ['LLMs', 'Agentic AI', 'Vector Databases', 'Prompt Engineering', 'AI-Assisted Dev'],
+        metrics: { coupling: 'Agentic Pipeline', state: 'Prompt-Driven State', quality: 'High Velocity' }
+      },
+      ui: {
+        badge: 'ANGULAR MATERIAL · CDK · TAILWIND · JEST',
+        title: 'Enterprise Shared UI Libraries & Automated Testing',
+        desc: 'Engineered reusable Angular Material, CDK, and Tailwind CSS design systems at Devon Software (for Exact) and custom analytics widgets at Snapcheck and Taxspanner, validated with Jest.',
+        bullets: [
+          'Custom query builders, dynamic graphs, data tables, pagination & date-ranges.',
+          'One-click JSON-to-Excel export and interactive ITR/TDS tax calculators.',
+          'Automated unit testing with Jest and CI/CD via Azure DevOps, Jenkins & AWS.'
+        ],
+        tags: ['Angular Material & CDK', 'Tailwind CSS', 'Sass/SCSS', 'Jest', 'AWS & Azure DevOps'],
+        metrics: { coupling: 'Shared Design Kit', state: 'OnPush / Reactive', quality: 'Jest + CI/CD' }
+      },
+      state: {
+        badge: 'RXJS · NGRX · NODE.JS · EXPRESS · MONGODB',
+        title: 'Reactive State, Node.js Microservices & MongoDB Optimization',
+        desc: 'Full-stack fluency bridging reactive front-end state (RxJS, NgRx) with secure Node.js/Express microservices, Passport.js + JWT RBAC, Java APIs, Plaid APIs, and optimized MongoDB queries.',
+        bullets: [
+          'Designed role-based access control (RBAC) with Passport.js (Node) and JWT via Java backends.',
+          'Optimized complex MongoDB queries at Snapcheck and Career Network SaaS for low-latency analytics.',
+          'Integrated Plaid banking APIs and paperless B2B digital e-check payment rails.'
+        ],
+        tags: ['RxJS', 'NgRx', 'Node.js', 'Express.js', 'MongoDB', 'Passport.js & JWT', 'REST APIs'],
+        metrics: { coupling: 'REST & JWT Sync', state: 'Optimized MongoDB', quality: 'RBAC Security' }
+      }
+    };
+
+    // ==========================================
+    // 2. RENDER UI SECTIONS
+    // ==========================================
+    function renderSkills(filterCat = 'all') {
+      const grid = document.getElementById('skills-grid');
+      grid.innerHTML = '';
+
+      const filtered = filterCat === 'all'
+        ? SKILL_CATEGORIES
+        : SKILL_CATEGORIES.filter(c => c.category === filterCat);
+
+      filtered.forEach(group => {
+        const card = document.createElement('div');
+        card.className = 'glass-panel rounded-3xl p-5 border border-white/10 tilt-card flex flex-col justify-between';
+        const chipsHtml = group.skills.map(skill => `
+          <button type="button"
+            data-skill-name="${skill.name.replace(/"/g, '&quot;')}"
+            data-skill-cat="${group.category.replace(/"/g, '&quot;')}"
+            data-skill-usage="${skill.usage.replace(/"/g, '&quot;')}"
+            class="skill-chip-btn px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-indigo-500/30 border border-white/10 hover:border-indigo-400/50 text-xs font-medium text-slate-200 hover:text-white transition text-left">
+            ${skill.name}
+          </button>
+        `).join('');
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-3.5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
+                  <i data-lucide="${group.icon}" class="w-4 h-4 text-indigo-300"></i>
+                </div>
+                <h3 class="font-bold text-sm sm:text-base text-white">${group.category}</h3>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400">${group.skills.length} skills</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${chipsHtml}
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      if (window.lucide) window.lucide.createIcons();
+      attachSkillChipListeners();
+      attachTiltListeners();
+    }
+
+    function attachSkillChipListeners() {
+      document.querySelectorAll('.skill-chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.getAttribute('data-skill-name');
+          const cat = btn.getAttribute('data-skill-cat');
+          const usage = btn.getAttribute('data-skill-usage');
+          document.getElementById('spotlight-name').textContent = name;
+          document.getElementById('spotlight-cat').textContent = cat;
+          document.getElementById('spotlight-usage').textContent = usage;
+
+          updateHud('Full-Stack Skill Node', name, usage);
+          pulseSkillConstellation();
+        });
+      });
+    }
+
+    function renderExperiences(activeId = null) {
+      const container = document.getElementById('experience-cards-container');
+      container.innerHTML = '';
+
+      EXPERIENCES.forEach(exp => {
+        const isHighlighted = activeId === exp.id;
+        const card = document.createElement('div');
+        card.id = `exp-card-${exp.id}`;
+        card.className = `glass-panel rounded-3xl p-6 tilt-card transition-all duration-300 flex flex-col justify-between ${
+          isHighlighted ? 'border-2 border-cyan-400 shadow-2xl shadow-cyan-500/20' : 'border border-white/10'
+        }`;
+
+        const bullets = exp.highlights.map(item => `
+          <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style="background:${exp.color}"></span>
+            <span>${item}</span>
+          </li>
+        `).join('');
+
+        const tags = exp.tags.map(t => `
+          <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-200">${t}</span>
+        `).join('');
+
+        card.innerHTML = `
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-mono px-2.5 py-1 rounded-lg border" style="background:${exp.color}20; border-color:${exp.color}60; color:#fff;">
+                ${exp.period}
+              </span>
+              <span class="text-[11px] font-mono text-slate-400">${exp.badge}</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white">${exp.role}</h3>
+            <p class="text-sm font-semibold text-indigo-300 mt-0.5">${exp.company}</p>
+            <ul class="mt-4 space-y-2">
+              ${bullets}
+            </ul>
+          </div>
+          <div class="mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex flex-wrap gap-1.5">${tags}</div>
+            <button type="button" data-focus-exp="${exp.id}" class="focus-3d-exp-btn shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-mono text-cyan-300 border border-cyan-500/30 transition flex items-center gap-1.5 self-start sm:self-auto">
+              <i data-lucide="locate-fixed" class="w-3.5 h-3.5"></i>
+              <span>Focus 3D Ring</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      if (window.lucide) window.lucide.createIcons();
+
+      document.querySelectorAll('.focus-3d-exp-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.getAttribute('data-focus-exp'), 10);
+          focusExperienceNode(id, false);
+        });
+      });
+
+      attachTiltListeners();
+    }
+
+    // ==========================================
+    // 3. THREE.JS 3D UNIVERSE & ANIMATION ENGINE
+    // ==========================================
+    const canvas = document.getElementById('bg-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050816, 0.018);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.set(0, 1.5, 16);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x050816, 1);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(0xf43f5e, 2.8, 60);
+    pointLight1.position.set(10, 10, 12);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x10b981, 2.6, 60);
+    pointLight2.position.set(-12, -8, 10);
+    scene.add(pointLight2);
+
+    const pointLight3 = new THREE.PointLight(0x6366f1, 2.2, 60);
+    pointLight3.position.set(0, 12, -15);
+    scene.add(pointLight3);
+
+    // Master Scene Group
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    const interactiveMeshes = [];
+
+    // --- A. HERO: FULL-STACK & MICRO-FRONTEND CORE ---
+    const coreGroup = new THREE.Group();
+    coreGroup.position.set(3.8, 0.5, 0);
+    worldGroup.add(coreGroup);
+
+    const coreOuterGeo = new THREE.IcosahedronGeometry(2.6, 1);
+    const coreOuterMat = new THREE.MeshStandardMaterial({
+      color: 0xf43f5e,
+      wireframe: true,
+      emissive: 0xf43f5e,
+      emissiveIntensity: 0.45
+    });
+    const coreOuterMesh = new THREE.Mesh(coreOuterGeo, coreOuterMat);
+    coreOuterMesh.userData = {
+      category: '01 · Full-Stack Core Node',
+      title: 'Angular (v2–v18+), React & Node.js Core',
+      desc: '10+ years architecting scalable enterprise applications, Material/CDK design systems, RxJS/NgRx stores, and Express/MongoDB backends.'
+    };
+    coreGroup.add(coreOuterMesh);
+    interactiveMeshes.push(coreOuterMesh);
+
+    const coreInnerGeo = new THREE.OctahedronGeometry(1.45, 0);
+    const coreInnerMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      roughness: 0.2,
+      metalness: 0.8,
+      emissive: 0x059669,
+      emissiveIntensity: 0.5
+    });
+    const coreInnerMesh = new THREE.Mesh(coreInnerGeo, coreInnerMat);
+    coreInnerMesh.userData = {
+      category: '02 · Live SaaS & Micro-Frontend Hub',
+      title: 'Career & Mentorship SaaS + Module Federation',
+      desc: 'Powering harish007.duckdns.org and decoupled enterprise micro-frontends with Nx Monorepo, Node.js, and MongoDB.'
+    };
+    coreGroup.add(coreInnerMesh);
+    interactiveMeshes.push(coreInnerMesh);
+
+    // Orbiting Full-Stack Satellite Cubes around Core
+    const satellitesGroup = new THREE.Group();
+    coreGroup.add(satellitesGroup);
+    const satLabels = [
+      { title: 'Career & Mentorship SaaS (Live)', desc: 'Full-stack social network at harish007.duckdns.org connecting Job Providers, Seekers, Mentors & Mentees.' },
+      { title: 'Frontend: Angular v18+ & React MFE', desc: 'Module Federation, Nx Monorepo, Tailwind CSS, and Angular Material & CDK component libraries.' },
+      { title: 'Backend: Node.js, Express & MongoDB', desc: 'Passport.js + JWT role-based access control, REST APIs, and optimized MongoDB query pipelines.' },
+      { title: 'AI: LLMs, Agentic AI & Vector DBs', desc: 'Semantic vector search and prompt-engineered state generation at Eurofins.' }
+    ];
+    for (let i = 0; i < 4; i++) {
+      const angle = (i / 4) * Math.PI * 2;
+      const satGeo = new THREE.BoxGeometry(0.68, 0.68, 0.68);
+      const satMat = new THREE.MeshStandardMaterial({
+        color: i === 0 ? 0x10b981 : (i % 2 === 0 ? 0x06b6d4 : 0xf43f5e),
+        emissive: i === 0 ? 0x10b981 : (i % 2 === 0 ? 0x06b6d4 : 0xf43f5e),
+        emissiveIntensity: 0.45,
+        roughness: 0.25,
+        metalness: 0.7
+      });
+      const sat = new THREE.Mesh(satGeo, satMat);
+      sat.position.set(Math.cos(angle) * 4.2, Math.sin(angle * 2) * 1.1, Math.sin(angle) * 4.2);
+      sat.userData = {
+        category: 'Full-Stack Satellite Node',
+        title: satLabels[i].title,
+        desc: satLabels[i].desc
+      };
+      satellitesGroup.add(sat);
+      interactiveMeshes.push(sat);
+    }
+
+    // Orbital Torus Rings around Core
+    const ringGeo1 = new THREE.TorusGeometry(4.2, 0.03, 16, 100);
+    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.45 });
+    const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+    ring1.rotation.x = Math.PI / 2.6;
+    coreGroup.add(ring1);
+
+    const ringGeo2 = new THREE.TorusGeometry(3.4, 0.025, 16, 100);
+    const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xf43f5e, transparent: true, opacity: 0.35 });
+    const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+    ring2.rotation.y = Math.PI / 3;
+    coreGroup.add(ring2);
+
+    // --- B. FEATURED SAAS PROJECT 3D GLOBE NODE (UPPER RIGHT / MID SPACE) ---
+    const saasGlobeGroup = new THREE.Group();
+    saasGlobeGroup.position.set(11, 3.5, -6);
+    worldGroup.add(saasGlobeGroup);
+
+    const saasSphereGeo = new THREE.SphereGeometry(2.1, 20, 20);
+    const saasSphereMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      wireframe: true,
+      emissive: 0x059669,
+      emissiveIntensity: 0.5
+    });
+    const saasSphereMesh = new THREE.Mesh(saasSphereGeo, saasSphereMat);
+    saasSphereMesh.userData = {
+      category: 'Featured Live SaaS Project',
+      title: 'Career & Mentorship Platform (harish007.duckdns.org)',
+      desc: 'Full-stack social network connecting Job Providers, Job Seekers, Mentors & Mentees with real-time feeds and profile matching.'
+    };
+    saasGlobeGroup.add(saasSphereMesh);
+    interactiveMeshes.push(saasSphereMesh);
+
+    const saasRingGeo = new THREE.TorusGeometry(2.8, 0.04, 16, 90);
+    const saasRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5 });
+    const saasRingMesh = new THREE.Mesh(saasRingGeo, saasRingMat);
+    saasRingMesh.rotation.x = Math.PI / 2.2;
+    saasGlobeGroup.add(saasRingMesh);
+
+    // --- C. SKILLS & AI NEURAL CONSTELLATION (LEFT / MID SPACE) ---
+    const skillsCloudGroup = new THREE.Group();
+    skillsCloudGroup.position.set(-14, 2, -8);
+    worldGroup.add(skillsCloudGroup);
+
+    const skillNodeMaterials = [];
+    const skillNodesPositions = [];
+    for (let i = 0; i < 20; i++) {
+      const phi = Math.acos(-1 + (2 * i) / 20);
+      const theta = Math.sqrt(20 * Math.PI) * phi;
+      const r = 4.6;
+      const x = r * Math.cos(theta) * Math.sin(phi);
+      const y = r * Math.sin(theta) * Math.sin(phi);
+      const z = r * Math.cos(phi);
+      skillNodesPositions.push(new THREE.Vector3(x, y, z));
+
+      const nodeGeo = new THREE.SphereGeometry(0.28, 16, 16);
+      const nodeMat = new THREE.MeshStandardMaterial({
+        color: i % 3 === 0 ? 0x10b981 : (i % 2 === 0 ? 0x6366f1 : 0xf43f5e),
+        emissive: i % 3 === 0 ? 0x10b981 : 0x6366f1,
+        emissiveIntensity: 0.55
+      });
+      skillNodeMaterials.push(nodeMat);
+      const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
+      nodeMesh.position.set(x, y, z);
+      const catGroup = SKILL_CATEGORIES[i % SKILL_CATEGORIES.length];
+      const flatSkill = catGroup.skills[i % catGroup.skills.length];
+      nodeMesh.userData = {
+        category: `02 · ${catGroup.category}`,
+        title: flatSkill.name,
+        desc: flatSkill.usage
+      };
+      skillsCloudGroup.add(nodeMesh);
+      interactiveMeshes.push(nodeMesh);
+    }
+
+    // Synaptic Lines connecting Skill Constellation
+    const linePoints = [];
+    for (let i = 0; i < skillNodesPositions.length; i++) {
+      for (let j = i + 1; j < skillNodesPositions.length; j++) {
+        if (skillNodesPositions[i].distanceTo(skillNodesPositions[j]) < 4.2) {
+          linePoints.push(skillNodesPositions[i], skillNodesPositions[j]);
+        }
+      }
+    }
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.25 });
+    const constellationLines = new THREE.LineSegments(lineGeo, lineMat);
+    skillsCloudGroup.add(constellationLines);
+
+    // --- D. CAREER TIMELINE MONOLITH RINGS (DEEP Z CORRIDOR) ---
+    const timelineGroup = new THREE.Group();
+    timelineGroup.position.set(0, 0, -24);
+    worldGroup.add(timelineGroup);
+
+    const expRings = [];
+    EXPERIENCES.forEach((exp, idx) => {
+      const ringGroup = new THREE.Group();
+      ringGroup.position.set((idx % 2 === 0 ? 1 : -1) * 2.5, (1.5 - idx) * 1.1, -idx * 6);
+
+      const torusGeo = new THREE.TorusGeometry(2.1, 0.12, 20, 80);
+      const torusMat = new THREE.MeshStandardMaterial({
+        color: exp.color,
+        emissive: exp.color,
+        emissiveIntensity: 0.45,
+        roughness: 0.3,
+        metalness: 0.8
+      });
+      const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+      torusMesh.userData = {
+        category: `Career Milestone · ${exp.period}`,
+        title: `${exp.role} @ ${exp.company}`,
+        desc: exp.highlights[0],
+        expId: exp.id
+      };
+      ringGroup.add(torusMesh);
+      interactiveMeshes.push(torusMesh);
+
+      const coreCrystal = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.65, 0),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true })
+      );
+      ringGroup.add(coreCrystal);
+
+      timelineGroup.add(ringGroup);
+      expRings.push({ group: ringGroup, mesh: torusMesh, crystal: coreCrystal });
+    });
+
+    // --- E. STARFIELD PARTICLE SYSTEM ---
+    const particleCount = 1200;
+    const posArray = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      posArray[i] = (Math.random() - 0.5) * 90;
+      posArray[i + 1] = (Math.random() - 0.5) * 60;
+      posArray[i + 2] = (Math.random() - 0.5) * 90 - 15;
+    }
+    const particlesGeo = new THREE.BufferGeometry();
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMat = new THREE.PointsMaterial({
+      size: 0.14,
+      color: 0x93c5fd,
+      transparent: true,
+      opacity: 0.75
+    });
+    const starField = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(starField);
+
+    // ==========================================
+    // 4. CAMERA WAYPOINTS & INTERACTION
+    // ==========================================
+    const CAMERA_WAYPOINTS = {
+      hero: {
+        pos: new THREE.Vector3(0, 1.2, 15.5),
+        lookAt: new THREE.Vector3(1.5, 0.4, 0),
+        hud: ['3D Full-Stack Universe · Active', 'Full-Stack & SaaS Core (Angular v18 + React + Node)', 'Interactive WebGL architecture: Click any glowing 3D object or warp across 10+ years of full-stack & SaaS engineering.']
+      },
+      project: {
+        pos: new THREE.Vector3(9.5, 3.2, 1.2),
+        lookAt: new THREE.Vector3(11, 3.5, -6),
+        hud: ['Featured Live SaaS Orbit', 'Career & Mentorship Platform (harish007.duckdns.org)', 'Full-stack social networking & mentorship platform connecting Job Providers, Seekers, Mentors & Mentees.']
+      },
+      skills: {
+        pos: new THREE.Vector3(-13.5, 2.2, 1.5),
+        lookAt: new THREE.Vector3(-14, 2, -8),
+        hud: ['Full-Stack Constellation Matrix', 'Full-Stack & DevOps Skills', 'Spanning Angular v2–v18+, React, Node.js, Express, MongoDB, Passport/JWT, Nx, Module Federation, Jest, AWS & Azure.']
+      },
+      architecture: {
+        pos: new THREE.Vector3(4.2, 1.8, 8.2),
+        lookAt: new THREE.Vector3(3.8, 0.5, 0),
+        hud: ['System Blueprint Mode', 'Full-Stack, MFE & Agentic AI Topology', 'Inspecting Angular/React Module Federation, Node.js/Express/MongoDB microservices, and LLM/Vector pipelines.']
+      },
+      experience: {
+        pos: new THREE.Vector3(0, 0.8, -14),
+        lookAt: new THREE.Vector3(0, 0, -32),
+        hud: ['Chronological 3D Corridor', '10+ Years Full-Stack & UI Progression', 'Eurofins & Devon Software (2021–Present), Snapcheck.com (2019–2021), and Taxspanner.com (2016–2019).']
+      },
+      contact: {
+        pos: new THREE.Vector3(0, 4.5, 19),
+        lookAt: new THREE.Vector3(0, 0, 0),
+        hud: ['Orbital Overview · Hire & Freelance', 'Open for SaaS Building & Freelance Projects', 'Bengaluru, India · +91 9079252481 · harishverma555@gmail.com · Short Notice (LWD 20 Nov 2026)']
+      }
+    };
+
+    const targetCamPos = CAMERA_WAYPOINTS.hero.pos.clone();
+    const targetLookAt = CAMERA_WAYPOINTS.hero.lookAt.clone();
+    const currentLookAt = CAMERA_WAYPOINTS.hero.lookAt.clone();
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let speedMultiplier = 1;
+    let isFreeExplorer = false;
+
+    function updateHud(category, title, desc) {
+      document.getElementById('hud-category').textContent = category;
+      document.getElementById('hud-title').textContent = title;
+      document.getElementById('hud-desc').textContent = desc;
+    }
+
+    function warpCameraTo(sectionKey, scrollPage = true) {
+      const wp = CAMERA_WAYPOINTS[sectionKey] || CAMERA_WAYPOINTS.hero;
+      targetCamPos.copy(wp.pos);
+      targetLookAt.copy(wp.lookAt);
+      updateHud(wp.hud[0], wp.hud[1], wp.hud[2]);
+
+      document.querySelectorAll('.cam-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-cam') === sectionKey && btn.closest('nav')) {
+          btn.className = 'cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-white bg-indigo-600/80 transition';
+        } else if (btn.closest('nav')) {
+          btn.className = 'cam-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition';
+        }
+      });
+
+      if (scrollPage) {
+        const el = document.getElementById(`sec-${sectionKey}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function focusExperienceNode(expId, shouldScrollCard = true) {
+      const ringItem = expRings[expId];
+      if (!ringItem) return;
+      const worldPos = new THREE.Vector3();
+      ringItem.group.getWorldPosition(worldPos);
+
+      targetCamPos.set(worldPos.x * 0.6, worldPos.y + 0.6, worldPos.z + 6.2);
+      targetLookAt.copy(worldPos);
+
+      const exp = EXPERIENCES[expId];
+      updateHud(`3D Milestone · ${exp.period}`, `${exp.role} @ ${exp.company}`, exp.highlights[0]);
+      renderExperiences(expId);
+
+      if (shouldScrollCard) {
+        const cardEl = document.getElementById(`exp-card-${expId}`);
+        if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function pulseSkillConstellation() {
+      skillNodeMaterials.forEach(mat => {
+        mat.emissiveIntensity = 1.4;
+        setTimeout(() => { mat.emissiveIntensity = 0.55; }, 550);
+      });
+    }
+
+    // Raycaster for clicking 3D objects directly
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    canvas.addEventListener('click', (e) => {
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(interactiveMeshes, false);
+      if (intersects.length > 0) {
+        const hit = intersects[0].object;
+        if (hit.userData && hit.userData.title) {
+          updateHud(hit.userData.category, hit.userData.title, hit.userData.desc);
+          const origScale = hit.scale.clone();
+          hit.scale.multiplyScalar(1.25);
+          setTimeout(() => hit.scale.copy(origScale), 300);
+          if (typeof hit.userData.expId === 'number') {
+            focusExperienceNode(hit.userData.expId, false);
+          }
+        }
+      }
+    });
+
+    // Scroll listener to subtly sync 3D camera with user scroll
+    window.addEventListener('scroll', () => {
+      if (isFreeExplorer) return;
+      const scrollY = window.scrollY;
+      const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
+      const ratio = scrollY / maxScroll;
+
+      if (ratio < 0.14) {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.hero.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.hero.lookAt, 0.08);
+      } else if (ratio < 0.30) {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.project.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.project.lookAt, 0.08);
+      } else if (ratio < 0.50) {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.skills.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.skills.lookAt, 0.08);
+      } else if (ratio < 0.68) {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.architecture.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.architecture.lookAt, 0.08);
+      } else if (ratio < 0.86) {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.experience.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.experience.lookAt, 0.08);
+      } else {
+        targetCamPos.lerp(CAMERA_WAYPOINTS.contact.pos, 0.08);
+        targetLookAt.lerp(CAMERA_WAYPOINTS.contact.lookAt, 0.08);
+      }
+    }, { passive: true });
+
+    // Animation Loop
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+      const elapsed = clock.getElapsedTime() * speedMultiplier;
+
+      // Rotate Core & Satellites
+      coreOuterMesh.rotation.x = elapsed * 0.28;
+      coreOuterMesh.rotation.y = elapsed * 0.36;
+      coreInnerMesh.rotation.x = -elapsed * 0.45;
+      coreInnerMesh.rotation.z = elapsed * 0.35;
+      satellitesGroup.rotation.y = elapsed * 0.5;
+      satellitesGroup.rotation.z = Math.sin(elapsed * 0.3) * 0.25;
+      ring1.rotation.z = elapsed * 0.25;
+      ring2.rotation.x = elapsed * 0.32;
+
+      // Rotate Featured SaaS Globe
+      saasSphereMesh.rotation.y = elapsed * 0.35;
+      saasSphereMesh.rotation.x = elapsed * 0.18;
+      saasRingMesh.rotation.z = -elapsed * 0.4;
+
+      // Rotate Skill Constellation
+      skillsCloudGroup.rotation.y = elapsed * 0.18;
+      skillsCloudGroup.rotation.x = Math.sin(elapsed * 0.2) * 0.15;
+
+      // Animate Experience Rings
+      expRings.forEach((item, idx) => {
+        item.mesh.rotation.z = elapsed * (0.2 + idx * 0.05);
+        item.crystal.rotation.x = elapsed * 0.6;
+        item.crystal.rotation.y = elapsed * 0.4;
+      });
+
+      // Drift Starfield
+      starField.rotation.y = elapsed * 0.025;
+
+      // Smooth Camera Interpolation + Mouse Parallax
+      const desiredX = targetCamPos.x + mouseX * 1.35;
+      const desiredY = targetCamPos.y - mouseY * 0.95;
+      camera.position.x += (desiredX - camera.position.x) * (dt * 3.5);
+      camera.position.y += (desiredY - camera.position.y) * (dt * 3.5);
+      camera.position.z += (targetCamPos.z - camera.position.z) * (dt * 3.5);
+
+      currentLookAt.lerp(targetLookAt, dt * 4.0);
+      camera.lookAt(currentLookAt);
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ==========================================
+    // 5. 3D CARD TILT & UI EVENT HANDLERS
+    // ==========================================
+    function attachTiltListeners() {
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        if (card.dataset.tiltBound) return;
+        card.dataset.tiltBound = 'true';
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotY = ((x / rect.width) - 0.5) * 8;
+          const rotX = ((y / rect.height) - 0.5) * -8;
+          card.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        });
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
+    function copyTextSafe(text, label = 'Copied to clipboard!') {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(label);
+        }).catch(() => fallbackCopy(text, label));
+      } else {
+        fallbackCopy(text, label);
+      }
+    }
+
+    function fallbackCopy(text, label) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+      showToast(label);
+    }
+
+    // Initialize UI & Listeners on Window Load
+    window.onload = () => {
+      renderSkills('all');
+      renderExperiences(null);
+      if (window.lucide) window.lucide.createIcons();
+      animate();
+
+      // Navigation camera buttons
+      document.querySelectorAll('.cam-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-cam');
+          if (isFreeExplorer) toggleFreeExplorer();
+          warpCameraTo(target, true);
+          document.getElementById('mobile-menu').classList.add('hidden');
+        });
+      });
+
+      // Mobile menu toggle
+      document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+      });
+
+      // Hero Focus Node buttons
+      document.querySelectorAll('.focus-node-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-node'), 10);
+          if (idx === 0) warpCameraTo('architecture', false);
+          if (idx === 1) warpCameraTo('skills', false);
+          if (idx === 2) warpCameraTo('experience', false);
+          if (idx === 3) warpCameraTo('project', true);
+        });
+      });
+
+      // Featured Live Project Module Tabs
+      document.querySelectorAll('.proj-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-proj-tab');
+          const info = PROJECT_TABS[key];
+          if (!info) return;
+          document.querySelectorAll('.proj-tab-btn').forEach(b => {
+            b.className = 'proj-tab-btn px-3 py-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 transition';
+          });
+          btn.className = 'proj-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/25 text-emerald-200 border border-emerald-400/50 transition';
+          document.getElementById('proj-tab-tag').textContent = info.tag;
+          document.getElementById('proj-tab-title').textContent = info.title;
+          document.getElementById('proj-tab-desc').textContent = info.desc;
+          updateHud('Live SaaS Module', info.title, info.desc);
+        });
+      });
+
+      // Skill category filter buttons
+      document.querySelectorAll('.skill-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-cat');
+          document.querySelectorAll('.skill-cat-btn').forEach(b => {
+            b.className = 'skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-300 transition';
+          });
+          btn.className = 'skill-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition';
+          renderSkills(cat);
+          pulseSkillConstellation();
+        });
+      });
+
+      // Architecture Layer buttons
+      document.querySelectorAll('.arch-layer-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-arch');
+          const data = ARCH_LAYERS[key];
+          if (!data) return;
+
+          document.querySelectorAll('.arch-layer-btn').forEach(b => {
+            b.className = 'arch-layer-btn text-left p-4 rounded-2xl bg-white/5 border-2 border-white/10 transition hover:border-indigo-400/50';
+          });
+          btn.className = 'arch-layer-btn text-left p-4 rounded-2xl bg-indigo-500/15 border-2 border-indigo-500 transition';
+
+          document.getElementById('arch-detail-badge').textContent = data.badge;
+          document.getElementById('arch-detail-title').textContent = data.title;
+          document.getElementById('arch-detail-desc').textContent = data.desc;
+          document.getElementById('arch-detail-bullets').innerHTML = data.bullets.map(b => `
+            <div class="flex items-start gap-2 text-xs text-slate-200">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+              <span>${b}</span>
+            </div>
+          `).join('');
+          document.getElementById('arch-detail-tags').innerHTML = data.tags.map(t => `
+            <span class="px-2.5 py-1 rounded-lg bg-white/5 text-xs font-mono text-indigo-200 border border-white/10">${t}</span>
+          `).join('');
+
+          document.getElementById('metric-coupling').textContent = data.metrics.coupling;
+          document.getElementById('metric-state').textContent = data.metrics.state;
+          document.getElementById('metric-quality').textContent = data.metrics.quality;
+
+          if (window.lucide) window.lucide.createIcons();
+          updateHud('Architecture Blueprint', data.title, data.desc);
+        });
+      });
+
+      // Simulate Full-Stack + AI Pipeline button
+      document.getElementById('simulate-deploy-btn').addEventListener('click', () => {
+        const statusEl = document.getElementById('sim-status');
+        const keys = ['shell', 'ai', 'ui', 'state'];
+        let step = 0;
+        speedMultiplier = 3.2;
+        statusEl.textContent = '⚡ BUILDING MFE + NODE.JS + AI AGENTS...';
+        statusEl.className = 'text-amber-300 animate-pulse';
+
+        clearInterval(window._simInterval);
+        window._simInterval = setInterval(() => {
+          const btn = document.querySelector(`.arch-layer-btn[data-arch="${keys[step]}"]`);
+          if (btn) btn.click();
+          step++;
+          if (step >= keys.length) {
+            clearInterval(window._simInterval);
+            speedMultiplier = 1;
+            statusEl.textContent = '✓ FULL-STACK + AI PIPELINE LIVE';
+            statusEl.className = 'text-emerald-400';
+            showToast('Full-Stack MFE, Node.js/MongoDB & Agentic AI pipeline verified!');
+          }
+        }, 700);
+      });
+
+      // Experience Quick-Jump buttons
+      document.querySelectorAll('.exp-jump-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const expId = parseInt(btn.getAttribute('data-exp'), 10);
+          focusExperienceNode(expId, true);
+        });
+      });
+
+      // Free Look Explorer Toggle
+      function toggleFreeExplorer() {
+        isFreeExplorer = !isFreeExplorer;
+        const mainUi = document.getElementById('main-ui-container');
+        const label = document.getElementById('explorer-btn-label');
+        if (isFreeExplorer) {
+          mainUi.style.opacity = '0.06';
+          mainUi.style.pointerEvents = 'none';
+          label.textContent = 'Show Portfolio UI';
+          updateHud('3D Free Look Active', 'Click Any 3D Object in Space', 'Move your mouse to orbit and click the glowing Full-Stack core, SaaS globe, or career rings.');
+        } else {
+          mainUi.style.opacity = '1';
+          mainUi.style.pointerEvents = 'none';
+          label.textContent = '3D Free Look';
+          updateHud('Portfolio UI Restored', 'Harish Kumar Verma — Full-Stack 3D CV', 'Scroll or use the top bar to navigate sections.');
+        }
+      }
+      document.getElementById('toggle-explorer-btn').addEventListener('click', toggleFreeExplorer);
+
+      // Theme Shader Switcher
+      const themes = [
+        { name: 'Cyber Angular', c1: 0xf43f5e, c2: 0x10b981, inner: 0x10b981 },
+        { name: 'Quantum AI', c1: 0x06b6d4, c2: 0x6366f1, inner: 0x059669 },
+        { name: 'Solar Gold', c1: 0xf59e0b, c2: 0xec4899, inner: 0xd97706 }
+      ];
+      let themeIdx = 0;
+      document.getElementById('theme-cycle-btn').addEventListener('click', () => {
+        themeIdx = (themeIdx + 1) % themes.length;
+        const t = themes[themeIdx];
+        coreOuterMat.color.setHex(t.c1);
+        coreOuterMat.emissive.setHex(t.c1);
+        coreInnerMat.color.setHex(t.inner);
+        ringMat1.color.setHex(t.c2);
+        ringMat2.color.setHex(t.c1);
+        pointLight1.color.setHex(t.c1);
+        pointLight2.color.setHex(t.c2);
+        document.getElementById('theme-label').textContent = t.name;
+        showToast(`3D Shader Theme: ${t.name}`);
+      });
+
+      // Orbit Speed Toggle
+      document.getElementById('speed-toggle-btn').addEventListener('click', () => {
+        speedMultiplier = speedMultiplier === 1 ? 2.5 : (speedMultiplier === 2.5 ? 0.35 : 1);
+        const text = speedMultiplier === 1 ? '1x Orbit' : (speedMultiplier === 2.5 ? '2.5x Warp' : '0.35x Calm');
+        document.getElementById('speed-label').textContent = text;
+      });
+
+      // Reset Camera
+      document.getElementById('reset-cam-btn').addEventListener('click', () => {
+        if (isFreeExplorer) toggleFreeExplorer();
+        warpCameraTo('hero', true);
+      });
+
+      // Copy Buttons
+      document.getElementById('hero-copy-email').addEventListener('click', () => {
+        copyTextSafe('harishverma555@gmail.com', 'Email copied: harishverma555@gmail.com');
+      });
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.getAttribute('data-copy');
+          copyTextSafe(val, `Copied: ${val}`);
+        });
+      });
+
+      // Contact Outreach Generator Form
+      let lastGeneratedMsg = '';
+      document.getElementById('contact-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const sender = document.getElementById('recruiter-name').value.trim() || 'Hiring / Product Team';
+        const role = document.getElementById('role-focus').value;
+        const customNote = document.getElementById('recruiter-msg').value.trim();
+
+        lastGeneratedMsg =
+`Subject: ${role} — Harish Kumar Verma
+
+Hi Harish,
+
+I'm reaching out from ${sender}. We explored your 3D Full-Stack portfolio, your live Career & Mentorship SaaS platform (https://harish007.duckdns.org/), and your 10+ years of experience across Angular (v2–v18+), React, Node.js, Express, MongoDB, and Micro-Frontends.
+
+${customNote ? customNote + '\n\n' : ''}We would love to connect regarding a ${role} engagement.
+
+Best regards,
+${sender}`;
+
+        document.getElementById('outreach-preview-text').textContent = lastGeneratedMsg;
+        document.getElementById('outreach-preview-box').classList.remove('hidden');
+
+        const mailtoUrl = `mailto:harishverma555@gmail.com?subject=${encodeURIComponent(role + ' — Harish Kumar Verma')}&body=${encodeURIComponent(lastGeneratedMsg)}`;
+        document.getElementById('mailto-direct-link').setAttribute('href', mailtoUrl);
+
+        copyTextSafe(lastGeneratedMsg, 'Outreach message generated & copied to clipboard!');
+      });
+
+      document.getElementById('copy-generated-msg-btn').addEventListener('click', () => {
+        if (lastGeneratedMsg) copyTextSafe(lastGeneratedMsg, 'Copied outreach message!');
+      });
+
+      // Modal Handlers
+      const modal = document.getElementById('resume-modal');
+      document.getElementById('open-resume-modal-btn').addEventListener('click', () => {
+        modal.classList.remove('hidden');
+      });
+      document.getElementById('close-resume-modal-btn').addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+      });
+    };
+  </script>
 </body>
-
 </html>
